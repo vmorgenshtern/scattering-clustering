@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+DATASETS=(mnist)
+ITER=(0 1 2 3 4)
+POC=(True False)
+SCAT=(False)
+USPEC=(True False)
+#
+for d in "${DATASETS[@]}";
+do
+  for s in "${SCAT[@]}";
+  do
+    for p in "${POC[@]}";
+    do
+      for u in "${USPEC[@]}";
+      do
+        for i in "${ITER[@]}";
+        do
+          # python baseline_clustering.py --method dbscan --dataset_name $d --verbose 0 --random_seed $i
+          CUDA_VISIBLE_DEVICES=5 python unsupervised_clustering.py --dataset_name $d --verbose 1 --random_seed $i --num_candidates 9000 \
+                                                                   --num_reps 1000 --num_clusters 10 --L 8 --num_dims 2 --pca False --pca_dims 1000 \
+                                                                   --batch_size 1024 --fname ablation_study_mnist.json \
+                                                                   --scattering $s --poc_preprocessing $p --uspec $u
+        done
+      done
+    done
+  done
+done

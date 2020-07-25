@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+POC=(True False)
+SCAT=(True False)
+USPEC=(True False)
+#
+for s in "${SCAT[@]}";
+do
+  for p in "${POC[@]}";
+  do
+    for u in "${USPEC[@]}";
+    do
+      python extract_results.py --fname ablation_study_mnist.json --outfile _paper_ablation_results.json --dataset_name mnist \
+                                --scattering $s --poc_preprocessing $p --uspec $u
+    done
+  done
+done
+#

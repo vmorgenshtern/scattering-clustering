@@ -1,19 +1,15 @@
 """
 Methods for equalization of the scattering coefficients
+
 @author: Angel Villar-Corrales
 """
 
 import os
 import json
 import datetime
-from tqdm import tqdm
 
 import numpy as np
 import torch
-
-import lib.utils.transforms as custom_transforms
-import lib.models as models
-import lib.utils.utils as utils
 
 
 def mean_variance_equalization(features, mean=None, std=None):

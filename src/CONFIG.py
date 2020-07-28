@@ -7,7 +7,8 @@ Global Configuration for the project
 
 CONFIG = {
     "paths": {
-        "exp_path": "experiments"
+        "exp_path": "experiments",
+        "data_path": "data"
     },
     "random_seed": 13,
     "num_workers": 4

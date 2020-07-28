@@ -11,6 +11,9 @@ import numpy as np
 import sklearn.metrics as metrics
 from sklearn.preprocessing import StandardScaler
 
+from lib.projections.projection_orthogonal_complement import compute_prototype
+from lib.projections.dimensionality_reduction import compute_eigendecomposition
+
 
 class POC():
     """

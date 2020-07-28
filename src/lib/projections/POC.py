@@ -40,28 +40,13 @@ class POC():
         Fitting the POC object with data. Computing prototype and eigendecomposition
         """
 
-        # reshaping to feature vectors if necessary
-        if(len(data.shape)>2):
-            data = data.reshape(data.shape[0],-1)
-        # standarizing vectors to zero-mean and unit-variance
-        if(self.standarize):
-            standardized_data = StandardScaler().fit_transform(data)
-        else:
-            standardized_data = data
-
-        # computing covariance matrix of the data
-        data_matrix = np.cov(standardized_data.T)
-        # computing eigendecomposition
-        eigenvalues, eigenvectors = np.linalg.eig(data_matrix)
-        # sorting by magnitude
-        idx = np.argsort(eigenvalues)[::-1]
-        eigenvectors = eigenvectors[:,idx].astype(float)
+        eigenvalues,\
+            eigenvectors = compute_eigendecomposition(data=data, standarize=self.standarize)
+        self.eigenvalues = eigenvalues
         self.eigenvectors = eigenvectors
 
         # computing prototype
-        prototype = np.mean(data, axis=0)
-        prototype = prototype[np.newaxis,:]
-        self.prototype = prototype
+        prototype = compute_prototype(data)
 
         return
 

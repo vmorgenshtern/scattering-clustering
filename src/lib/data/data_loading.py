@@ -101,7 +101,7 @@ class ClassificationDataset():
         self.valid_sampler = SubsetRandomSampler(val_idx)
 
         self.train_data, self.train_labels = self.train_data[train_idx], self.train_labels[train_idx]
-        self.valid_data, self.valid_labels = self.train_data[val_idx], self.train_data[val_idx]
+        self.valid_data, self.valid_labels = self.train_data[val_idx], self.train_labels[val_idx]
 
         return
 

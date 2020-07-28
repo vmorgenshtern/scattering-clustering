@@ -4,12 +4,104 @@ Methods for the 'Projection onto Orthogonal Complement algorithm'
 @author: Angel Villar-Corrales
 """
 
+from tqdm import tqdm
+
 import numpy as np
 from matplotlib import pyplot as plt
 import sklearn.metrics as metrics
 from sklearn.preprocessing import StandardScaler
 
 from lib.projections.dimensionality_reduction import compute_eigendecomposition
+
+
+def projections_classifier(points, eigenvectors, prototypes, n_directions):
+    """
+    Classifying datapoints based on the POC algorithm
+
+    Args:
+    -----
+    points: np array
+        array with the points to project
+    eigenvectors: list of np arrays
+        list with the eigenvector matrix for each class that we want to project onto
+    prototypes: list of np arrays
+        list with the class-prototype for each class that we want to project onto
+    n_directions: int
+        number of directions to remove.
+
+    Returns:
+    --------
+    labels: np array
+        array containing the predicted labels for each datapoint
+    min_distances: np array
+        array containing the min distances
+    """
+
+    distances = []
+
+    if(len(points.shape)>2):
+        points = points.reshape(points.shape[0], -1)
+    if(not isinstance(points, np.ndarray)):
+        points = points.numpy()
+
+    # removing the eigenvectors associated to the largest eigenvalues, projecting
+    # the samples and computing the distance in the low-dimensional space
+    for i in range(len(prototypes)):
+        eigenvectors_reduced = eigenvectors[i][:, n_directions:]
+        current_distances = points - prototypes[i]
+        projected_distances = np.matmul(eigenvectors_reduced.T, current_distances.T).T
+        projected_distances = np.linalg.norm(projected_distances, axis=1)
+        distances.append(projected_distances)
+
+    # chosing the labels corresponding to the smallest distances
+    distances = np.array(distances)
+    labels = np.argmin(distances, axis=0)
+    min_distances = np.min(distances, axis=0)
+
+    return labels, min_distances
+
+
+def get_features_all_classes(data, labels, cluster_ids, verbose=0, **kwargs):
+    """
+    Extracting the feautures for all classes
+
+    Args:
+    -----
+    data: numpy array
+        matrix containing the data points as columns (N, dims)
+    labels: numpy array/list
+        list with the label of each data point (N)
+    cluster_ids: list
+        list with the labels to extract the features from
+
+    Returns:
+    --------
+    class_data: list
+        list with the data samples for each label
+    prototypes: list
+        list containing each class prototype
+    eigenvectors: list
+        list containing the eigenvectors for each label
+    """
+
+    class_data = []
+    prototypes = []
+    eigenvectors = []
+
+    if(verbose==0):
+        iterator = cluster_ids
+    else:
+        iterator = tqdm(cluster_ids)
+
+    for id in iterator:
+        cur_class_data, cur_prototype, cur_eigenvectors, \
+            cur_eigenvalues = extract_cluster_features(data, labels, cluster_id=id, **kwargs)
+        class_data.append(cur_class_data)
+        prototypes.append(cur_prototype)
+        eigenvectors.append(cur_eigenvectors)
+        # eigenvalues.append(cur_eigenvalues)
+
+    return class_data, prototypes, eigenvectors
 
 
 def extract_cluster_features(data, labels, cluster_id=0, prot_method="mean", standarize=False):
@@ -46,6 +138,8 @@ def extract_cluster_features(data, labels, cluster_id=0, prot_method="mean", sta
 
     if(len(data.shape) > 2):
         data = data.reshape(data.shape[0], -1)
+    if(not isinstance(data, np.ndarray)):
+        data = data.numpy()
     if(cluster_id not in labels):
         print(f"There are no data points with label: {cluster_id}")
         return None, None
@@ -78,12 +172,12 @@ def compute_prototype(data, method="mean"):
 
     assert method in ["mean", "median"]
 
-    if(prot_method == "mean"):
-        prototype = np.mean(classwise_data, axis=0)
-    elif(prot_method == "median"):
-        prototype = np.median(classwise_data, axis=0)
+    if(method == "mean"):
+        prototype = np.mean(data, axis=0)
+    elif(method == "median"):
+        prototype = np.median(data, axis=0)
 
-    return
+    return prototype
 
 
 def get_classwise_data(data, labels, label=0, verbose=0):

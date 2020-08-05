@@ -24,4 +24,38 @@ def display_subset_data(imgs, labels):
     return
 
 
+def visualize_accuracy_landscape(xaxis, accuracy, **kwargs):
+    """
+    Visualizing a line plot displaying the accuracy
+    """
+
+    if("ax" in kwargs):
+        ax = kwargs["ax"]
+    else:
+        fig, ax = plt.subplots(1,1)
+
+    ax.scatter(xaxis, accuracy, linewidth=3)
+    ax.plot(xaxis, accuracy, linewidth=3)
+
+    if("grid" in kwargs):
+        ax.grid()
+    if("title" in kwargs):
+        ax.set_title(kwargs["title"])
+    if("xlabel" in kwargs):
+        ax.set_xlabel(kwargs["xlabel"])
+    if("ylabel" in kwargs):
+        ax.set_ylabel(kwargs["ylabel"])
+    if("xticks" in kwargs):
+        xticklabels = kwargs["xticks"]
+        xticks = np.arange(len(xticklabels))
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticklabels)
+    if("yticks" in kwargs):
+        yticklabels = kwargs["yticks"]
+        yticks = np.arange(len(yticklabels))
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(yticklabels)
+
+    return
+
 #

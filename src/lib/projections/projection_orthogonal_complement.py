@@ -61,6 +61,56 @@ def projections_classifier(points, eigenvectors, prototypes, n_directions):
     return labels, min_distances
 
 
+def optimize_dimensionality(data, labels, dims, prototypes, eigenvectors, verbose=0):
+    """
+    Finding the optimum number of directions to project out in the POC algorithm
+
+    Args:
+    -----
+    data: numpy array
+        Data to classify during the experiment.
+    labels: numpy array
+        labels corresponding to the data to classifiy. Used to compute accuracy
+    dims: list or numpy array
+        candidates to try out to compute the optimum dimensionality
+    prototypes, eigenvectors: numpy arrays
+        class prototypes and class eigenvector matrices computed on the train set
+    verbose: integer
+        verbosity level
+
+    Returns:
+    --------
+    opt_dims: integer
+        number of directions removed to obtain the best accuracy
+    max_accuracy: float
+        maximum accuracy obtained from all candidates
+    accuracies: list
+        all accuracies computed
+    """
+
+    if(verbose > 0):
+        iterator = tqdm(dims)
+    else:
+        iterator = dims
+
+    accuracies = []
+    for i, cur_dim in enumerate(iterator):
+        pred_labels, _ = projections_classifier(points=data, eigenvectors=eigenvectors,
+                                                prototypes=prototypes, n_directions=cur_dim)
+        n_correct_lbl = len(np.where(pred_labels == labels.numpy())[0])
+        accuracy = n_correct_lbl / len(labels) * 100
+        accuracies.append(accuracy)
+
+    max_accuracy = np.max(accuracies)
+    max_idx = np.argmax(accuracies)
+    opt_dims = dims[max_idx]
+    if(verbose > 0):
+        print(f"Maximum accuracy was {round(max_accuracy,2)}. " \
+              f"It was found removing {opt_dims} directions.")
+
+    return opt_dims, max_accuracy, accuracies
+
+
 def get_features_all_classes(data, labels, cluster_ids, verbose=0, **kwargs):
     """
     Extracting the feautures for all classes

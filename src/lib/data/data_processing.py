@@ -4,12 +4,41 @@ Utils for data preprocessing and handling
 @author: Angel Villar-Corrales
 """
 
+from tqdm import tqdm
+
 import numpy as np
 import torch
 from lib.scattering.equalizations import max_norm_equalization
 from lib.data.custom_transforms import pad_img
 
 
+def get_classwise_data(data, labels, label=0, verbose=0):
+    """
+    Obtaining features and labels corresponding to a particular class
+
+    Args:
+    -----
+    data: numpy array
+        array-like object with the data
+    labels: np array or list
+        arraylike object with the labels corresponding to the data
+    label: integer
+        label corresponding to the data that we want to extract
+    verbose: integer
+        verbosity level
+
+    Returns:
+    --------
+    classwise_data: np array
+        array with the data corresponding to the desired class
+    """
+
+    idx = np.where(labels==label)[0]
+    classwise_data = data[idx,:]
+    if(verbose>0):
+        print(f"There are {len(idx)} datapoints with label {label}")
+
+    return classwise_data
 
 
 def remove_class_data(data, labels, label=0, verbose=1):
@@ -71,7 +100,13 @@ def convert_images_to_scat(images, scattering, device, equalize=False):
     padded_imgs = padded_imgs.to(device)
 
     # scattering forward
-    scat_features = scattering(padded_imgs)
+    step = 64
+    scat_features = []
+    for i in tqdm(range(0, padded_imgs.shape[0], step)):
+        cur_scat_features = scattering(padded_imgs[step*i:step*(i+1),:])
+        scat_features.append(cur_scat_features)
+    scat_features = np.concatenate(scat_features, axis=0)
+
     scat_features = np.array(scat_features.cpu(), dtype=np.float64)
 
     if(equalize):

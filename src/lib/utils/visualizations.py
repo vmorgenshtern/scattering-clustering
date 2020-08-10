@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def display_subset_data(imgs, labels):
+def display_subset_data(imgs, labels, shuffle=True):
     """
     Displaying a small subset of the images
     """
@@ -16,10 +16,18 @@ def display_subset_data(imgs, labels):
     fig, ax = plt.subplots(1, 6)
     fig.set_size_inches(30, 4)
 
-    for col in range(6):
-        ax[col].imshow(imgs[col,:])
+    if(imgs.shape[1]<=3):
+        imgs = imgs.transpose(0,2,3,1)
+
+    if(shuffle):
+        indices = np.random.randint(low=0, high=imgs.shape[0], size=6)
+    else:
+        indices = np.arange(6)
+
+    for col, idx in enumerate(indices):
+        ax[col].imshow(imgs[idx,:])
         ax[col].axis("off")
-        ax[col].set_title(f"Label {labels[col]}")
+        ax[col].set_title(f"Label {labels[idx]}")
 
     return
 

@@ -136,7 +136,7 @@ class ClassificationDataset(Dataset):
 
         assert split in ["train", "valid", "test"]
         assert isinstance(batch_size, int) and batch_size > 0
-        assert isinstance(shuffle, boolean)
+        assert isinstance(shuffle, bool)
 
         num_workers = CONFIG["num_workers"]
         if(split is "train"):
@@ -146,12 +146,11 @@ class ClassificationDataset(Dataset):
             dataset_split = self.train_set
             sampler = self.valid_sampler
         else:
-            dataset_split = self.valid_set
+            dataset_split = self.test_set
             sampler = None
 
         loader = torch.utils.data.DataLoader(dataset_split, batch_size=batch_size,
-                                             num_workers=num_workers, shuffle=shuffle,
-                                             sampler=sampler)
+                                             num_workers=num_workers, sampler=sampler)
 
         return loader
 

@@ -17,7 +17,7 @@ def display_subset_data(imgs, labels, shuffle=True):
     fig.set_size_inches(30, 4)
 
     if(imgs.shape[1]<=3):
-        imgs = imgs.transpose(0,2,3,1)
+        imgs = imgs.transpose(0,2,3,1).squeeze()
 
     if(shuffle):
         indices = np.random.randint(low=0, high=imgs.shape[0], size=6)

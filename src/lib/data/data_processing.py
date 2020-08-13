@@ -74,6 +74,8 @@ def remove_class_data(data, labels, label=0, verbose=1):
 
 def convert_images_to_scat(images, scattering, device, equalize=False):
     """
+    Converting an array of images to the scattering domain
+
     Args:
     -----
     images: numpy array/torch Tensor
@@ -87,7 +89,7 @@ def convert_images_to_scat(images, scattering, device, equalize=False):
 
     Returns:
     --------
-    scattering: numpy arrays
+    scat_features: numpy arrays
         scattering features from the images in the data loader
     """
 
@@ -95,18 +97,12 @@ def convert_images_to_scat(images, scattering, device, equalize=False):
     if(len(images.shape) == 3):
         images = images[:, np.newaxis, :, :]
     if(isinstance(images, np.ndarray)):
-        images = torch.Tensor(images).to(device)
+        images = torch.Tensor(images)
     padded_imgs = pad_img(images, target_shape=(32,32)).squeeze()
     padded_imgs = padded_imgs.to(device)
 
     # scattering forward
-    step = 64
-    scat_features = []
-    for i in tqdm(range(0, padded_imgs.shape[0], step)):
-        cur_scat_features = scattering(padded_imgs[step*i:step*(i+1),:])
-        scat_features.append(cur_scat_features)
-    scat_features = np.concatenate(scat_features, axis=0)
-
+    scat_features = scattering(padded_imgs)
     scat_features = np.array(scat_features.cpu(), dtype=np.float64)
 
     if(equalize):
@@ -115,4 +111,55 @@ def convert_images_to_scat(images, scattering, device, equalize=False):
     return scat_features
 
 
+def convert_loader_to_scat(loader, scattering, device, equalize=False, verbose=0):
+    """
+    Converting all images from a data loader to the scattering domain
+
+    Args:
+    -----
+    loader: data loader
+        Data loader fitting the images to convert to the scat domain
+    scattering: kymatio network
+        kymation scattering network used top process the images
+    device: device
+        cpu or gpu
+    equalize: Boolean
+        if True, scattering features are max-equalized
+    verbose: integer
+        verbosity level
+
+    Returns:
+    --------
+    scat_features: numpy arrays
+        scattering features from the images in the data loader
+    """
+
+    if(verbose > 0):
+        iterator = tqdm(loader)
+    else:
+        iterator = loader
+
+    scat_features = []
+    imgs = []
+    labels = []
+    for i, (cur_imgs, cur_lbls) in enumerate(iterator):
+
+        # preprocessing
+        padded_imgs = pad_img(cur_imgs, target_shape=(32,32)).squeeze()
+        padded_imgs = padded_imgs.to(device)
+
+        # scattering forward
+        cur_scat_features = scattering(padded_imgs)
+        cur_scat_features = np.array(cur_scat_features.cpu(), dtype=np.float64)
+
+        imgs.append(cur_imgs)
+        scat_features.append(cur_scat_features)
+        labels.append(cur_lbls)
+
+    imgs = np.concatenate(imgs, axis=0)
+    # imgs = imgs.transpose(0,2,3,1)
+    scat_features = np.concatenate(scat_features, axis=0)
+    labels = np.concatenate(labels, axis=0)
+
+    return imgs, scat_features, labels
 #

@@ -97,7 +97,7 @@ def optimize_dimensionality(data, labels, dims, prototypes, eigenvectors, verbos
     for i, cur_dim in enumerate(iterator):
         pred_labels, _ = projections_classifier(points=data, eigenvectors=eigenvectors,
                                                 prototypes=prototypes, n_directions=cur_dim)
-        n_correct_lbl = len(np.where(pred_labels == labels.numpy())[0])
+        n_correct_lbl = len(np.where(pred_labels == labels)[0])
         accuracy = n_correct_lbl / len(labels) * 100
         accuracies.append(accuracy)
 

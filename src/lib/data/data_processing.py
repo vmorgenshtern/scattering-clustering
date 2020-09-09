@@ -157,9 +157,11 @@ def convert_loader_to_scat(loader, scattering, device, equalize=False, verbose=0
         labels.append(cur_lbls)
 
     imgs = np.concatenate(imgs, axis=0)
-    # imgs = imgs.transpose(0,2,3,1)
     scat_features = np.concatenate(scat_features, axis=0)
+    if(equalize):
+        scat_features, _ = max_norm_equalization(scat_features)
     labels = np.concatenate(labels, axis=0)
 
     return imgs, scat_features, labels
+
 #

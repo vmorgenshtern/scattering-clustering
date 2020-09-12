@@ -8,22 +8,82 @@ import os
 import copy
 import argparse
 
-from CONFIG import DEFAULTS as def_params
+from CONFIG import DEFAULTS_CLASSIFICATION as def_params_class
+from CONFIG import DEFAULTS_CLUSTERING as def_params_clust
 
-def process_arguments():
+
+def process_classification_arguments():
     """
-    Defining and processing command line arguments for classification or clustering
-    experiments
+    Defining and processing command line arguments for classification experiments
     """
 
     parser = argparse.ArgumentParser()
 
     # general parameters
-    parser.add_argument('--task', help='Task to perform ["classification", "clustering"]',
-                        default="classification")
     parser.add_argument('--dataset_name', help="Name of the dataset to classify or " \
-                        "cluster: ['mnist', 'fashion_mnist']", default="mnist")
+                        "cluster: ['mnist', 'fashion_mnist', 'svhn']", default="mnist")
     parser.add_argument('--verbose', help='verbosity level', type=int, default=0)
+
+
+    # data parameters
+    parser.add_argument('--batch_size', help="Number of elements in batch for " \
+                        "data loaders", type=int)
+    parser.add_argument('--equalize', help="If True, scattering features are equalized so that " \
+                        "features for the same path are on the same scale.")
+
+    # classification parameters
+    parser.add_argument('--optimize_dims', help="If True, number of directions to remove is " \
+                        "optimized using the validation set. [True/False]")
+    parser.add_argument('--min_dims', help="First number of directios to use for " \
+                        "parameter optimization", type=int)
+    parser.add_argument('--max_dims', help="First number of directios to use for " \
+                        "parameter optimization", type=int)
+    parser.add_argument('--step_dims', help="Step used for evaluating n_dims for optimization ",
+                        type=int)
+    parser.add_argument('--num_dims', help="Number of dimensions to remove (overwritten if " \
+                        "optimize_dims is False) ", type=int)
+
+    # clustering parameters
+
+    args = parser.parse_args()
+
+    # enforcing correct values
+    dataset_name = args.dataset_name
+    verbose = args.verbose
+    assert dataset_name in ["mnist", "fashion_mnist", 'svhn'], \
+        f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
+        f"'fashion_mnist'] are allowed"
+    args.equalize = (args.equalize == True) if args.equalize != None else None
+    args.optimize_dims = (args.optimize_dims == True) if args.optimize_dims != None else None
+
+    # matching default values
+    # params = copy.deepcopy(def_params)
+    params = {}
+    cl_params = vars(args)
+    for p in def_params_class["data"]:
+        params[p] = cl_params[p] if(cl_params[p] is not None) \
+                                 else def_params_class["data"][p]
+    for p in def_params_class["classification"]:
+        params[p] = cl_params[p] if(cl_params[p] is not None) \
+                                 else def_params_class["classification"][p]
+    params = argparse.Namespace(**params)
+
+    return dataset_name, verbose, params
+
+
+def process_clustering_arguments():
+    """
+    Defining and processing command line arguments for clustering experiments
+    """
+
+    parser = argparse.ArgumentParser()
+
+    # general parameters
+    parser.add_argument('--dataset_name', help="Name of the dataset to classify or " \
+                        "cluster: ['mnist', 'fashion_mnist', 'svhn']", default="mnist")
+    parser.add_argument('--verbose', help='verbosity level', type=int, default=0)
+    parser.add_argument('--poc_preprocessing', help="if True, the POC algorithm is a "\
+                        "preprocessing step to the clustering algorithm")
 
 
     # data parameters
@@ -51,13 +111,9 @@ def process_arguments():
     args = parser.parse_args()
 
     # enforcing correct values
-    task = args.task
     dataset_name = args.dataset_name
     verbose = args.verbose
-    assert task in ["classification", "clustering"], \
-        f"ERROR! wrong 'task' parameter: {task}.\n Only ['classification',"\
-        f"'clustering'] are allowed"
-    assert dataset_name in ["mnist", "fashion_mnist"], \
+    assert dataset_name in ["mnist", "fashion_mnist", 'svhn'], \
         f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
         f"'fashion_mnist'] are allowed"
     args.equalize = (args.equalize == True) if args.equalize != None else None
@@ -73,4 +129,7 @@ def process_arguments():
         params[p] = cl_params[p] if(cl_params[p] is not None) else def_params["classification"][p]
     params = argparse.Namespace(**params)
 
-    return task, dataset_name, verbose, params
+    return dataset_name, verbose, params
+
+
+    #

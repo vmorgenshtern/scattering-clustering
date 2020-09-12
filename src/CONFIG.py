@@ -8,14 +8,15 @@ Global Configuration for the project
 CONFIG = {
     "paths": {
         "exp_path": "../experiments",
-        "data_path": "../data"
+        "data_path": "../data",
+        "results_path": "results"
     },
     "random_seed": 13,
     "num_workers": 4
 }
 
 
-DEFAULTS = {
+DEFAULTS_CLASSIFICATION = {
     "data": {
         "batch_size": 128,      # number elemnts in batch
         "valid_size": 0.25,     # percentage of training data to use for validation
@@ -28,4 +29,8 @@ DEFAULTS = {
         "step_dims": 20,        # step used for evaluating n_dims for optimization
         "num_dims": 120,        # number of dimensions to remove (if optimize_dims is False)
     }
+}
+
+DEFAULTS_CLUSTERING = {
+
 }

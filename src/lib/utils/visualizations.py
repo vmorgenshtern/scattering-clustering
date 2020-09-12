@@ -69,4 +69,143 @@ def visualize_accuracy_landscape(xaxis, accuracy, **kwargs):
 
     return
 
+
+###########################################################
+# Visualizations of eigenvalues a histograms, CDFs and so on
+#
+# Patched-Imagenet/lib/visualizations
+###########################################################
+
+import numpy as np
+from matplotlib import pyplot as plt
+
+def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle="", fig=None,
+                                 ax=None, legend=None):
+    """
+    Computing plots that display the eigenvalue distribution as a histogram
+
+    Args:
+    -----
+    eigenvalues: numpy array
+        array with the eigenvalues of the covariance matrix sorted by magnitude in descending order
+    label: integer or string
+        label to include in the title of the plots
+    suptitle: string
+        subtitle of the figure
+    """
+
+    eigenvalues_norm = eigenvalues/np.sum(eigenvalues)
+
+    if(fig is None or ax is None):
+        fig, ax = plt.subplots(1,1)
+        fig.set_size_inches(12,5)
+        fig.suptitle(suptitle)
+
+    if(bins is None):
+        bins = np.linspace(0,max(eigenvalues_norm),120)
+
+    if(legend is None):
+        ax.hist(eigenvalues_norm, bins)
+    else:
+        ax.hist(eigenvalues_norm, bins, label=legend)
+        ax.legend(loc="best")
+    if(title is None):
+        ax.set_title(f"Eigenvalue distribution")
+    else:
+        ax.set_title(title)
+    ax.set_xlabel("Magnitude of eigenvalues")
+    ax.set_ylabel("Number of eigenvalues")
+    ax.set_yscale("log")
+
+    return fig, ax, bins
+
+
+def compute_eigenvalue_cdf(eigenvalues, title=None, suptitle="", fig=None, ax=None, legend=None):
+    """
+    Computing CDF of the data variance as a function of the number of eigenvalues
+
+    Args:
+    -----
+    eigenvalues: numpy array
+        array with the eigenvalues of the covariance matrix sorted by magnitude in descending order
+    label: integer or string
+        label to include in the title of the plots
+    suptitle: string
+        subtitle of the figure
+    """
+
+    eigenvalues_norm = eigenvalues/np.sum(eigenvalues)
+    cdf = np.cumsum(eigenvalues_norm)
+
+    if(fig is None or ax is None):
+        fig, ax = plt.subplots(1,1)
+        fig.set_size_inches(12,5)
+        fig.suptitle(suptitle)
+
+    if(legend is None):
+        ax.plot(cdf)
+    else:
+        ax.plot(cdf, label=legend)
+        ax.legend(loc="best")
+
+    if(title is None):
+        ax.set_title("CDF of the Eigenvalue distribution")
+    else:
+        ax.set_title(title)
+    ax.set_xlabel("Number of eigenvalues")
+    ax.set_ylabel("Accumulated variance")
+
+    return fig, ax
+
+
+def display_cluster_features(eigenvalues, prototype=None, disp_prot=False, **kwargs):
+    """
+    Displaying some plots with eigenvalue statistics and withe prototype if necessary
+
+    Args:
+    -----
+    prototype: numpy array
+        class prototype. Corresponds to the mean/median of the class
+    eigenvalues: numpy array
+        eigenvalues from the data matrix sorted in descending order
+    disp_prot: boolean
+        If True, displays the class prototype
+    """
+
+    eigenvalues_norm = eigenvalues/np.sum(eigenvalues)
+    cdf = np.cumsum(eigenvalues_norm)
+
+    if(disp_prot):
+        fig, ax = plt.subplots(1,3)
+        fig.set_size_inches(15,4)
+    else:
+        fig, ax = plt.subplots(1,2)
+        fig.set_size_inches(11,4)
+
+    bins = np.linspace(0,max(eigenvalues_norm),120)
+    ax[0].hist(eigenvalues_norm, bins)
+    ax[0].set_title("Histogram of Eigenvalues")
+    ax[0].set_ylabel("Number of Eigenvalues")
+    ax[0].set_xlabel("Magnitude of Eigenvalues")
+    ax[0].set_yscale("log")
+
+    ax[1].plot(cdf)
+    ax[1].set_xlabel("Number of eigenvalues")
+    ax[1].set_ylabel("Accumulated variance")
+    ax[1].set_title("CDF of the Eigenvalue distribution")
+
+    if(disp_prot):
+        prototype = prototype.reshape(28, 28)
+        ax[2].imshow(prototype)
+        ax[2].set_title("Class Prototype")
+
+    if("suptitle" in kwargs):
+        plt.suptitle(kwargs["suptitle"])
+
+    plt.tight_layout()
+
+    return
+
+
+
 #

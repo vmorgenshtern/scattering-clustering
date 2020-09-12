@@ -6,12 +6,13 @@ representations of the original small images
 """
 
 import os
-import argparse
+import json
 
 import numpy as np
 import torch
 
-from lib.utils.arguments import process_arguments
+from lib.utils.arguments import process_classification_arguments
+from lib.utils.utils import create_directory
 from lib.data.data_loading import ClassificationDataset
 from lib.data.data_processing import convert_loader_to_scat
 from lib.projections.projection_orthogonal_complement import get_features_all_classes, \
@@ -20,12 +21,12 @@ from lib.scattering.scattering_methods import scattering_layer
 from CONFIG import CONFIG
 
 
-def experiment(task, dataset_name, params, verbose):
+def classification_experiment(dataset_name, params, verbose):
     """
-    Classification of clustering experiment
+    Performing a classification experiment using the POC algorithm on scattering
+    features of the original images
     """
 
-    #
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # loading data and breaking it into different dataset splits
@@ -89,12 +90,41 @@ def experiment(task, dataset_name, params, verbose):
     print(f"Test set accuracy results:")
     print(f"    {round(test_set_acc_scat, 3)}%")
 
+    # loading previous results, if any
+    results_path = os.path.join(os.getcwd(), CONFIG["paths"]["results_path"])
+    _ = create_directory(results_path)
+    results_file = os.path.join(results_path, "classification_results.json")
+    if(os.path.exists(results_file)):
+        with open(results_file) as f:
+            data = json.load(f)
+            n_exps = len(list(data.keys()))
+    else:
+        data = {}
+        n_exps = 0
+    # saving experiment parameters and results
+    with open(results_file, "w") as f:
+        cur_exp = {}
+        cur_exp["params"] = {}
+        cur_exp["params"]["dataset"] = dataset_name
+        params = vars(params)
+        for p in params:
+            cur_exp["params"][p] = params[p]
+        cur_exp["results"] = {}
+
+        cur_exp["test_accuracy"] = str(test_set_acc_scat)
+        cur_exp["num_dims"] = str(num_dims)
+        print(cur_exp)
+        data[f"experiment_{n_exps}"] = cur_exp
+        json.dump(data, f)
+
     return
 
 
 
 if __name__ == "__main__":
-    task, dataset_name, verbose, params = process_arguments()
+    dataset_name, verbose, params = process_classification_arguments()
     print(params)
 
-    experiment(task=task, dataset_name=dataset_name, params=params, verbose=verbose)
+    classification_experiment(dataset_name=dataset_name, params=params, verbose=verbose)
+
+#

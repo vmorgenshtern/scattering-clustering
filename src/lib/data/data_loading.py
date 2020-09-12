@@ -42,7 +42,7 @@ class ClassificationDataset(Dataset):
         """
 
         # checking valid values for the parameters
-        assert dataset_name in ["mnist", "svhn"],\
+        assert dataset_name in ["mnist", "svhn", "fashion_mnist"],\
                f"Dataset name: {dataset_name} is not a correct value. Choose one " \
                 "from ['mnist', 'svhn']"
         assert (valid_size >= 0 and valid_size < 1), f"Valid size must be in range [0,1)"
@@ -74,6 +74,14 @@ class ClassificationDataset(Dataset):
             test_set = datasets.SVHN(self.data_path, split='test',download=True,
                                       transform=transformations)
             train_set.targets, test_set.targets = train_set.labels, test_set.labels
+
+        elif(dataset_name == "fashion_mnist"):
+            transformations.append(transforms.Normalize((0.5,), (0.5,)))
+            transformations = transforms.Compose(transformations)
+            train_set = datasets.FashionMNIST(self.data_path, train=True, download=True,
+                                              transform=transformations)
+            test_set = datasets.FashionMNIST(self.data_path, train=False, download=True,
+                                             transform=transformations)
 
         self.train_data, self.train_labels = train_set.data, train_set.targets
         self.test_data, self.test_labels = test_set.data, test_set.targets

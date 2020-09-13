@@ -72,13 +72,11 @@ def remove_class_data(data, labels, label=0, verbose=1):
 
 
 
-def convert_images_to_scat(images, scattering, device, equalize=False):
+def convert_images_to_scat(images, scattering, device, equalize=False, batch_size=None):
     """
-    Converting an array of images to the scattering domain
-
     Args:
     -----
-    images: numpy array/torch Tensor
+    images: numpy array
         Array (B,C,H,W) containing the images to convert to the scattering domain
     scattering: kymatio network
         kymation scattering network used top process the images
@@ -86,24 +84,36 @@ def convert_images_to_scat(images, scattering, device, equalize=False):
         cpu or gpu
     equalize: Boolean
         if True, scattering features are max-equalized
+    batch_size: integer
+        if positive and not None, scattering transform is computed in a batch-wise manner
 
     Returns:
     --------
-    scat_features: numpy arrays
+    scattering: numpy arrays
         scattering features from the images in the data loader
     """
 
     # preprocessing
-    if(len(images.shape) == 3):
-        images = images[:, np.newaxis, :, :]
-    if(isinstance(images, np.ndarray)):
-        images = torch.Tensor(images)
+    images = torch.Tensor(images).to(device)
     padded_imgs = pad_img(images, target_shape=(32,32)).squeeze()
     padded_imgs = padded_imgs.to(device)
 
     # scattering forward
-    scat_features = scattering(padded_imgs)
-    scat_features = np.array(scat_features.cpu(), dtype=np.float64)
+    if(batch_size is not None and batch_size > 0):
+        # computing scattering in a batchwise fashion => use this for large datasets
+        scat_features = []
+        n_batches = int(np.ceil(images.shape[0] / batch_size))
+        for i in tqdm(range(n_batches)):
+            low = int(i * batch_size)
+            high = min(images.shape[0], int((i+1) * batch_size))
+            cur_imgs = padded_imgs[low:high,:]
+            cur_scat = scattering(cur_imgs).cpu()
+            scat_features.append(cur_scat)
+        scat_features = np.concatenate(scat_features, axis=0)
+    else:
+        # computing scattering all at once => fast but only possible for small datasets
+        scat_features = scattering(padded_imgs)
+        scat_features = np.array(scat_features.cpu(), dtype=np.float64)
 
     if(equalize):
         scat_features, _ = max_norm_equalization(scat_features)

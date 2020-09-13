@@ -163,4 +163,18 @@ class ClassificationDataset(Dataset):
         return loader
 
 
+    def get_all_data(self):
+        """
+        Obtaining all images and labels in the dataset
+        """
+
+        train_data, train_labels = self.train_set.data, self.train_set.targets
+        test_data, test_labels = self.test_set.data, self.test_set.targets
+
+        all_data = np.concatenate((train_data, test_data), axis=0)
+        all_labels = np.concatenate((train_labels, test_labels), axis=0)
+
+        return all_data, all_labels
+
+
 #

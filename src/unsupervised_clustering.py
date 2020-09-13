@@ -14,10 +14,10 @@ import torch
 from lib.clustering.uspec import USPEC
 from lib.clustering.utils import compute_clustering_metrics
 from lib.data.data_loading import ClassificationDataset
-from lib.data.data_processing import convert_loader_to_scat
+from lib.data.data_processing import convert_images_to_scat
 from lib.projections.POC import POC
 from lib.scattering.scattering_methods import scattering_layer
-from lib.utils.arguments import process_classification_arguments
+from lib.utils.arguments import process_clustering_arguments
 from lib.utils.utils import create_directory
 from CONFIG import CONFIG
 
@@ -34,34 +34,30 @@ def clustering_experiment(dataset_name, params, verbose=0):
     dataset = ClassificationDataset(data_path=CONFIG["paths"]["data_path"],
                                     dataset_name=dataset_name,
                                     valid_size=0)
-    train_loader = dataset.get_data_loader(split="train", batch_size=params.batch_size)
-    test_loader = dataset.get_data_loader(split="test", batch_size=params.batch_size)
+    imgs, labels = dataset.get_all_data()
 
     # computing scattering representations
     scattering_net, _ = scattering_layer()
     scattering_net = scattering_net.cuda() if device.type == 'cuda' else scattering_net
-    if verbose > 0: print("Computing scattering features for training set...")
-    train_imgs, train_scat_features, train_labels = \
-        convert_loader_to_scat(train_loader, scattering=scattering_net,
-                               device=device, equalize=params.equalize,
-                               verbose=verbose)
-    if verbose > 0: print("Computing scattering features for test set...")
-    test_imgs, test_scat_features, test_labels = \
-        convert_loader_to_scat(test_loader, scattering=scattering_net,
-                               device=device, equalize=params.equalize,
-                               verbose=verbose)
-    n_labels = len(np.unique(train_labels))
+    if verbose > 0: print("Computing scattering features for dataset...")
+    scat_features  = convert_images_to_scat(imgs, scattering=scattering_net,
+                                            device=device, equalize=params.equalize,
+                                            batch_size=params.batch_size)
+    n_labels = len(np.unique(labels))
 
     # POC preprocessing: removing the top directions of variance as a preprocessing step
-    poc = POC()
-    poc.fit(data=train_scat_features)
-    proj_data = poc.transform(data=train_scat_features, n_dims=params.num_dims)
+    if(params.poc_preprocessing):
+        poc = POC()
+        poc.fit(data=scat_features)
+        proj_data = poc.transform(data=scat_features, n_dims=params.num_dims)
+    else:
+        proj_data = scat_features.reshape(scat_features.shape[0], -1)
 
     # clustering using Ultra-Scalable Spectral Clustering
     uspec = USPEC(p_interm=1e4, p_final=1e3, n_neighbors=5, num_clusters=10, num_iters=100)
-    cur_preds = uspec.cluster(data=proj_data, verbose=verbose)
+    preds = uspec.cluster(data=proj_data, verbose=verbose)
 
-    cluster_score, cluster_acc = compute_clustering_metrics(preds=preds, labels=all_labels)
+    cluster_score, cluster_acc = compute_clustering_metrics(preds=preds, labels=labels)
     print(f"Clustering Accuracy: {round(cluster_acc*100,2)}")
     print(f"Clustering ARI Score: {round(cluster_score,2)}")
 

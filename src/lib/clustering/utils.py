@@ -10,6 +10,48 @@ from tqdm import tqdm
 import numpy as np
 from numba import jit
 from matplotlib import pyplot as plt
+import sklearn.metrics as metrics
+
+
+def compute_clustering_metrics(preds, labels):
+    """
+    Computing different clustering metrics, i.e., clustering accuracy and ARI score
+    """
+
+    acc = compute_cluster_accuracy_relaxed(predictions=preds, labels=labels)
+    score = metrics.adjusted_rand_score(preds, labels)
+
+    return score, acc
+
+
+def compute_cluster_accuracy_relaxed(predictions, labels):
+    """
+    Computing a relaxed version of the clustering accuracy. We assume that the method
+    clusters with reasonable accuracy and choose as ground truth the label that is the
+    most represented in each cluster.
+
+    Args:
+    -----
+    predictions, labels: numpy array
+        one dimensional arrays containing the prediceted and ground truth
+        cluster assignments respectively
+    """
+
+    n_correct = 0
+    preds_unique = np.unique(predictions)
+    for i, pred in enumerate(preds_unique):
+        # obtaining predictions and targets corresponding to a given cluster
+        idx = np.where(predictions==pred)[0]
+        cur_preds = predictions[idx]
+        lbls = labels[idx]
+        # counting most represented labels
+        (values,counts) = np.unique(lbls,return_counts=True)
+        max_represented_lbl = values[np.argmax(counts)]
+        n_correct = n_correct + np.max(counts)
+
+    accuracy = n_correct / len(labels)
+
+    return accuracy
 
 
 def compute_cluster_accuracy(predictions, labels):

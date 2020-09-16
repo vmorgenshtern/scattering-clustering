@@ -7,6 +7,7 @@ Methods for loading and preprocessing the datasets
 import os
 
 import numpy as np
+from PIL import Image
 import torch
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import SubsetRandomSampler
@@ -42,9 +43,9 @@ class ClassificationDataset(Dataset):
         """
 
         # checking valid values for the parameters
-        assert dataset_name in ["mnist", "svhn", "fashion_mnist"],\
-               f"Dataset name: {dataset_name} is not a correct value. Choose one " \
-                "from ['mnist', 'svhn']"
+        assert dataset_name in ["mnist", "svhn", "fashion_mnist", 'usps', 'mnist-test', \
+               'coil-100'], f"Dataset name: {dataset_name} is not a correct value. " \
+                f"Choose one from ['mnist', 'svhn', 'usps', 'mnist-test', 'coil-100']"
         assert (valid_size >= 0 and valid_size < 1), f"Valid size must be in range [0,1)"
 
         self.data_path = data_path
@@ -57,18 +58,22 @@ class ClassificationDataset(Dataset):
             transformations = []
         if(transforms.ToTensor() not in transformations):
             transformations.append(transforms.ToTensor())
+        transformations.append(transforms.Normalize((0.5,), (0.5,)))
+        transformations = transforms.Compose(transformations)
 
         # loading the corresponding data
         if(dataset_name == "mnist"):
-            transformations.append(transforms.Normalize((0.5,), (0.5,)))
-            transformations = transforms.Compose(transformations)
             train_set = datasets.MNIST(self.data_path, train=True, download=True,
                                             transform=transformations)
             test_set = datasets.MNIST(self.data_path, train=False, download=True,
                                         transform=transformations)
+
+        elif(dataset_name == "mnist-test"):
+            train_set = None
+            test_set = datasets.MNIST(self.data_path, train=False, download=True,
+                                        transform=transformations)
+
         elif(dataset_name == "svhn"):
-            transformations.append(transforms.Normalize((0.5,), (0.5,)))
-            transformations = transforms.Compose(transformations)
             train_set = datasets.SVHN(self.data_path, split='train',download=True,
                                       transform=transformations)
             test_set = datasets.SVHN(self.data_path, split='test',download=True,
@@ -76,18 +81,31 @@ class ClassificationDataset(Dataset):
             train_set.targets, test_set.targets = train_set.labels, test_set.labels
 
         elif(dataset_name == "fashion_mnist"):
-            transformations.append(transforms.Normalize((0.5,), (0.5,)))
-            transformations = transforms.Compose(transformations)
             train_set = datasets.FashionMNIST(self.data_path, train=True, download=True,
                                               transform=transformations)
             test_set = datasets.FashionMNIST(self.data_path, train=False, download=True,
                                              transform=transformations)
 
-        self.train_data, self.train_labels = train_set.data, train_set.targets
+        elif(dataset_name == "usps"):
+            train_set = datasets.USPS(self.data_path, train=True, download=True,
+                                      transform=transformations)
+            test_set = datasets.USPS(self.data_path, train=False, download=True,
+                                     transform=transformations)
+
+        elif(dataset_name == "coil-100"):
+            data_path = os.path.join(self.data_path, "coil-100", "coil-100")
+            get_lbl = lambda name: int(name.split("_")[0][3:])
+            train_set = None
+            test_set = CustomDataset(root=data_path,
+                                     transform=transformations,
+                                     get_lbl=get_lbl)
+
+        if(train_set is not None):
+            self.train_data, self.train_labels = train_set.data, train_set.targets
         self.test_data, self.test_labels = test_set.data, test_set.targets
         self.train_set = train_set
         self.test_set = test_set
-        if(self.valid_size > 0):
+        if(self.valid_size > 0 and self.train_set is not None):
             self._get_train_validation_split()
 
         return
@@ -168,6 +186,11 @@ class ClassificationDataset(Dataset):
         Obtaining all images and labels in the dataset
         """
 
+        # for MNIST-test we just get the test set
+        if(self.train_set is None):
+            return self.test_set.data.numpy(), self.test_set.targets.numpy()
+
+        # for other datasets we concatenate all data
         train_data, train_labels = self.train_set.data, self.train_set.targets
         test_data, test_labels = self.test_set.data, self.test_set.targets
 
@@ -176,5 +199,33 @@ class ClassificationDataset(Dataset):
 
         return all_data, all_labels
 
+
+class CustomDataset(Dataset):
+    def __init__(self, root, transform, get_lbl=None):
+        self.root = root
+        self.transform = transform
+        self.get_lbl = get_lbl
+        self.data, self.targets = None, None
+        self._load_data()
+
+    def __len__(self):
+        return len(self.targets)
+
+    def __getitem__(self, idx):
+        return self.data[idx,:], self.targets[idx]
+
+    def _load_data(self):
+        data, targets = [], []
+        for img_name in os.listdir(self.root):
+            if(img_name[-4:] != ".png"):
+                continue
+            label = self.get_lbl(img_name)
+            img = os.path.join(self.root, img_name)
+            img = np.array(Image.open(img).convert('L'))
+            img = self.transform(img)
+            data.append(img)
+            targets.append(label)
+        self.data = torch.stack(data)
+        self.targets = torch.Tensor(targets)
 
 #

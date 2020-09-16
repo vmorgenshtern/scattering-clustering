@@ -9,6 +9,7 @@ __pycache__/
 # my own ignores
 .ftpconfig
 paper
+aux.py
 
 # Distribution / packaging
 .Python

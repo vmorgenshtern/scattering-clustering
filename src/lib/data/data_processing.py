@@ -95,7 +95,10 @@ def convert_images_to_scat(images, scattering, device, equalize=False, batch_siz
 
     # preprocessing
     images = torch.Tensor(images).to(device)
-    padded_imgs = pad_img(images, target_shape=(32,32)).squeeze()
+    if(images.shape[-2] < 32 or images.shape[-1] < 32):
+        padded_imgs = pad_img(images, target_shape=(32,32)).squeeze()
+    else:
+        padded_imgs = images.squeeze()
     padded_imgs = padded_imgs.to(device)
 
     # scattering forward

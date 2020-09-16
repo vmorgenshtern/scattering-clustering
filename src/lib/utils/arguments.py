@@ -20,7 +20,8 @@ def process_classification_arguments():
 
     # general parameters
     parser.add_argument('--dataset_name', help="Name of the dataset to classify or " \
-                        "cluster: ['mnist', 'fashion_mnist', 'svhn']", default="mnist")
+                        "cluster: ['mnist', 'fashion_mnist', 'svhn', 'usps', 'mnist-test']",
+                        default="mnist")
     parser.add_argument('--verbose', help='verbosity level', type=int, default=0)
 
 
@@ -49,11 +50,11 @@ def process_classification_arguments():
     # enforcing correct values
     dataset_name = args.dataset_name
     verbose = args.verbose
-    assert dataset_name in ["mnist", "fashion_mnist", 'svhn'], \
+    assert dataset_name in ["mnist", "fashion_mnist", 'svhn', 'usps', 'mnist-test'], \
         f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
-        f"'fashion_mnist'] are allowed"
-    args.equalize = (args.equalize == True) if args.equalize != None else None
-    args.optimize_dims = (args.optimize_dims == True) if args.optimize_dims != None else None
+        f"'fashion_mnist', 'usps', 'mnist-test'] are allowed"
+    args.equalize = (args.equalize == "True") if args.equalize != None else None
+    args.optimize_dims = (args.optimize_dims == "True") if args.optimize_dims != None else None
 
     # matching default values
     # params = copy.deepcopy(def_params)
@@ -79,7 +80,9 @@ def process_clustering_arguments():
 
     # general parameters
     parser.add_argument('--dataset_name', help="Name of the dataset to classify or " \
-                        "cluster: ['mnist', 'fashion_mnist', 'svhn']", default="mnist")
+                        "cluster: ['mnist', 'fashion_mnist', 'svhn', 'usps', " \
+                        "'mnist-test', 'coil-100']",
+                        default="mnist")
     parser.add_argument('--verbose', help='verbosity level', type=int, default=0)
 
     # data parameters
@@ -110,11 +113,11 @@ def process_clustering_arguments():
     # enforcing correct values
     dataset_name = args.dataset_name
     verbose = args.verbose
-    assert dataset_name in ["mnist", "fashion_mnist", 'svhn'], \
+    assert dataset_name in ["mnist", "fashion_mnist", 'svhn', 'usps', 'mnist-test', 'coil-100'], \
         f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
-        f"'fashion_mnist'] are allowed"
-    args.equalize = (args.equalize == True) if args.equalize != None else None
-    args.poc_preprocessing = (args.poc_preprocessing == True) if args.poc_preprocessing != None else None
+        f"'fashion_mnist', 'usps', 'mnist-test'] are allowed"
+    args.equalize = (args.equalize == "True") if args.equalize != None else None
+    args.poc_preprocessing = (args.poc_preprocessing == "True") if args.poc_preprocessing != None else None
 
     # matching default values
     # params = copy.deepcopy(def_params)

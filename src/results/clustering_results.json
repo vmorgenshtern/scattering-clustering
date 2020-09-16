@@ -1,0 +1,122 @@
+{
+  "experiment_0": {
+    "params": {
+      "dataset": "mnist",
+      "batch_size": 128,
+      "valid_size": 0,
+      "equalize": true,
+      "poc_preprocessing": true,
+      "num_dims": 2,
+      "num_candidates": 10000,
+      "num_reps": 1000,
+      "num_clusters": 10
+    },
+    "results": {
+      "cluster_acc": 0.962,
+      "cluster_ari": 0.919,
+      "cluster_nmi": 0.907
+    },
+    "timing": {
+      "scattering": 57.723023414611816,
+      "preprocessing": 10.708631753921509,
+      "clustering": 259.3918602466583,
+      "total": 327.82351541519165
+    }
+  },
+  "experiment_1": {
+    "params": {
+      "dataset": "mnist",
+      "batch_size": 128,
+      "valid_size": 0,
+      "equalize": true,
+      "poc_preprocessing": true,
+      "num_dims": 2,
+      "num_candidates": 10000,
+      "num_reps": 1000,
+      "num_clusters": 10
+    },
+    "results": {
+      "cluster_acc": 0.962,
+      "cluster_ari": 0.919,
+      "cluster_nmi": 0.908
+    },
+    "timing": {
+      "scattering": 56.82075357437134,
+      "preprocessing": 10.149699687957764,
+      "clustering": 260.7943260669708,
+      "total": 327.7647793292999
+    }
+  },
+  "experiment_2": {
+    "params": {
+      "dataset": "mnist",
+      "batch_size": 128,
+      "valid_size": 0,
+      "equalize": true,
+      "poc_preprocessing": true,
+      "num_dims": 2,
+      "num_candidates": 10000,
+      "num_reps": 1000,
+      "num_clusters": 10
+    },
+    "results": {
+      "cluster_acc": 0.961,
+      "cluster_ari": 0.915,
+      "cluster_nmi": 0.904
+    },
+    "timing": {
+      "scattering": 68.37509322166443,
+      "preprocessing": 11.729398012161255,
+      "clustering": 264.6232306957245,
+      "total": 344.72772192955017
+    }
+  },
+  "experiment_3": {
+    "params": {
+      "dataset": "mnist",
+      "batch_size": 128,
+      "valid_size": 0,
+      "equalize": true,
+      "poc_preprocessing": true,
+      "num_dims": 2,
+      "num_candidates": 10000,
+      "num_reps": 1000,
+      "num_clusters": 10
+    },
+    "results": {
+      "cluster_acc": 0.963,
+      "cluster_ari": 0.919,
+      "cluster_nmi": 0.907
+    },
+    "timing": {
+      "scattering": 61.43946433067322,
+      "preprocessing": 11.012138843536377,
+      "clustering": 272.15083479881287,
+      "total": 344.60243797302246
+    }
+  },
+  "experiment_4": {
+    "params": {
+      "dataset": "mnist",
+      "batch_size": 128,
+      "valid_size": 0,
+      "equalize": true,
+      "poc_preprocessing": true,
+      "num_dims": 2,
+      "num_candidates": 10000,
+      "num_reps": 1000,
+      "num_clusters": 10
+    },
+    "results": {
+      "cluster_acc": 0.962,
+      "cluster_ari": 0.918,
+      "cluster_nmi": 0.906
+    },
+    "timing": {
+      "scattering": 56.18525576591492,
+      "preprocessing": 10.142340421676636,
+      "clustering": 263.1397919654846,
+      "total": 329.4673881530762
+    }
+  }
+}

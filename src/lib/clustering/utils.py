@@ -20,8 +20,9 @@ def compute_clustering_metrics(preds, labels):
 
     acc = compute_cluster_accuracy_relaxed(predictions=preds, labels=labels)
     score = metrics.adjusted_rand_score(preds, labels)
+    nmi = metrics.normalized_mutual_info_score(labels_true=labels, labels_pred=preds)
 
-    return score, acc
+    return score, acc, nmi
 
 
 def compute_cluster_accuracy_relaxed(predictions, labels):

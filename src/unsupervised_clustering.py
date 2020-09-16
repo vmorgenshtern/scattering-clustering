@@ -7,6 +7,7 @@ to the scattering representations of the original small images
 
 import os
 import json
+import time
 
 import numpy as np
 import torch
@@ -36,7 +37,11 @@ def clustering_experiment(dataset_name, params, verbose=0):
                                     valid_size=0)
     imgs, labels = dataset.get_all_data()
 
+    print(imgs.shape)
+    print(labels.shape)
+
     # computing scattering representations
+    t0 = time.time()
     scattering_net, _ = scattering_layer()
     scattering_net = scattering_net.cuda() if device.type == 'cuda' else scattering_net
     if verbose > 0: print("Computing scattering features for dataset...")
@@ -46,6 +51,7 @@ def clustering_experiment(dataset_name, params, verbose=0):
     n_labels = len(np.unique(labels))
 
     # POC preprocessing: removing the top directions of variance as a preprocessing step
+    t1 = time.time()
     if(params.poc_preprocessing):
         poc = POC()
         poc.fit(data=scat_features)
@@ -54,12 +60,17 @@ def clustering_experiment(dataset_name, params, verbose=0):
         proj_data = scat_features.reshape(scat_features.shape[0], -1)
 
     # clustering using Ultra-Scalable Spectral Clustering
-    uspec = USPEC(p_interm=1e4, p_final=1e3, n_neighbors=5, num_clusters=10, num_iters=100)
+    t2 = time.time()
+    uspec = USPEC(p_interm=params.num_candidates, p_final=params.num_reps,
+                  n_neighbors=5, num_clusters=params.num_clusters, num_iters=100)
     preds = uspec.cluster(data=proj_data, verbose=verbose)
+    t3 = time.time()
 
-    cluster_score, cluster_acc = compute_clustering_metrics(preds=preds, labels=labels)
-    print(f"Clustering Accuracy: {round(cluster_acc*100,2)}")
-    print(f"Clustering ARI Score: {round(cluster_score,2)}")
+    cluster_score, cluster_acc, cluster_nmi = compute_clustering_metrics(preds=preds,
+                                                                         labels=labels)
+    print(f"Clustering Accuracy: {round(cluster_acc,3)}")
+    print(f"Clustering ARI Score: {round(cluster_score,3)}")
+    print(f"Clustering ARI Score: {round(cluster_nmi,3)}")
 
     # loading previous results, if any
     results_path = os.path.join(os.getcwd(), CONFIG["paths"]["results_path"])
@@ -81,9 +92,14 @@ def clustering_experiment(dataset_name, params, verbose=0):
         for p in params:
             cur_exp["params"][p] = params[p]
         cur_exp["results"] = {}
-
-        cur_exp["cluster_score"] = str(cluster_score)
-        cur_exp["cluster_acc"] = str(cluster_acc)
+        cur_exp["results"]["cluster_acc"] = round(cluster_acc,3)
+        cur_exp["results"]["cluster_ari"] = round(cluster_score,3)
+        cur_exp["results"]["cluster_nmi"] = round(cluster_nmi,3)
+        cur_exp["timing"] = {}
+        cur_exp["timing"]["scattering"] = t1 - t0
+        cur_exp["timing"]["preprocessing"] = t2 - t1
+        cur_exp["timing"]["clustering"] = t3 - t2
+        cur_exp["timing"]["total"] = t3 - t0
         print(cur_exp)
         data[f"experiment_{n_exps}"] = cur_exp
         json.dump(data, f)
@@ -92,6 +108,7 @@ def clustering_experiment(dataset_name, params, verbose=0):
 
 
 if __name__ == "__main__":
+    os.system("clear")  # TODO: remove this line
     dataset_name, verbose, params = process_clustering_arguments()
     print(params)
 

@@ -11,7 +11,7 @@ CONFIG = {
         "data_path": "../data",
         "results_path": "results"
     },
-    "random_seed": 13,
+    "random_seed": 17,
     "num_workers": 4
 }
 
@@ -19,7 +19,7 @@ CONFIG = {
 DEFAULTS = {
     "data": {
         "batch_size": 128,         # number elemnts in batch
-        "valid_size": 0.25,        # percentage of training data to use for validation
+        "valid_size": 0.0,         # percentage of training data to use for validation
         "equalize": True           # If True, equalizing scat features along the same path
     },
     "classification": {

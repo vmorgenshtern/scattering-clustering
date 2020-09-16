@@ -11,7 +11,7 @@ CONFIG = {
         "data_path": "../data",
         "results_path": "results"
     },
-    "random_seed": 17,
+    "random_seed": 20,
     "num_workers": 4
 }
 

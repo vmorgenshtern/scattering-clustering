@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+PROCESS=(True False)
+ITER=(1 2 3 4 5)
+#
+for p in "${PROCESS[@]}";
+do
+  for i in "${ITER[@]}";
+  do
+    CUDA_VISIBLE_DEVICES=5 python unsupervised_clustering.py --dataset_name usps --verbose 1 --poc_preprocessing $p \
+      --num_candidates 9000
+  done
+done

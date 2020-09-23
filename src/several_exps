@@ -1,13 +1,15 @@
 #!/bin/bash
 #
-PROCESS=(True False)
-ITER=(1 2 3 4 5)
+# PROCESS=(True False)
+DATASETS=(mnist-test usps mnist fashion_mnist)
+ITER=(0 1 2 3 4)
 #
-for p in "${PROCESS[@]}";
+for d in "${DATASETS[@]}";
 do
   for i in "${ITER[@]}";
   do
-    CUDA_VISIBLE_DEVICES=5 python unsupervised_clustering.py --dataset_name usps --verbose 1 --poc_preprocessing $p \
-      --num_candidates 9000
+    python baseline_clustering.py --method k_means --dataset_name $d --verbose 0 --random_seed $i
+    # CUDA_VISIBLE_DEVICES=5 python unsupervised_clustering.py --dataset_name usps --verbose 1 --poc_preprocessing $p \
+      # --num_candidates 9000
   done
 done

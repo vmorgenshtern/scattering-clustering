@@ -10,6 +10,7 @@ __pycache__/
 .ftpconfig
 paper
 aux.py
+*.json
 
 # Distribution / packaging
 .Python

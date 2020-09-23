@@ -23,7 +23,7 @@ from lib.utils.utils import create_directory
 from CONFIG import CONFIG
 
 
-def clustering_experiment(dataset_name, params, verbose=0):
+def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
     """
     Performing a clustering experiment (with possible POC preprocessing) on scattering
     features of the original images
@@ -37,9 +37,6 @@ def clustering_experiment(dataset_name, params, verbose=0):
                                     valid_size=0)
     imgs, labels = dataset.get_all_data()
 
-    print(imgs.shape)
-    print(labels.shape)
-
     # computing scattering representations
     t0 = time.time()
     scattering_net, _ = scattering_layer(J=params.J, shape=(params.shape, params.shape),
@@ -48,7 +45,8 @@ def clustering_experiment(dataset_name, params, verbose=0):
     if verbose > 0: print("Computing scattering features for dataset...")
     scat_features  = convert_images_to_scat(imgs, scattering=scattering_net,
                                             device=device, equalize=params.equalize,
-                                            batch_size=params.batch_size)
+                                            batch_size=params.batch_size,
+                                            pad_size=params.shape)
     n_labels = len(np.unique(labels))
 
     # POC preprocessing: removing the top directions of variance as a preprocessing step
@@ -76,7 +74,8 @@ def clustering_experiment(dataset_name, params, verbose=0):
     # loading previous results, if any
     results_path = os.path.join(os.getcwd(), CONFIG["paths"]["results_path"])
     _ = create_directory(results_path)
-    results_file = os.path.join(results_path, "clustering_results.json")
+    poc = "poc" if params.poc_preprocessing==True else "not-poc"
+    results_file = os.path.join(results_path, f"{dataset_name}_{poc}_clustering_results.json")
     if(os.path.exists(results_file)):
         with open(results_file) as f:
             data = json.load(f)
@@ -109,10 +108,11 @@ def clustering_experiment(dataset_name, params, verbose=0):
 
 
 if __name__ == "__main__":
-    os.system("clear")  # TODO: remove this line
-    dataset_name, verbose, params = process_clustering_arguments()
+    os.system("clear")
+    dataset_name, verbose, params, random_seed = process_clustering_arguments()
     print(params)
 
-    clustering_experiment(dataset_name=dataset_name, params=params, verbose=verbose)
+    clustering_experiment(dataset_name=dataset_name, params=params,
+                          verbose=verbose, random_seed=random_seed)
 
 #

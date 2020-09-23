@@ -11,7 +11,7 @@ CONFIG = {
         "data_path": "../data",
         "results_path": "results"
     },
-    "random_seed": 20,
+    "random_seed": 13,
     "num_workers": 4
 }
 
@@ -40,6 +40,6 @@ DEFAULTS = {
         "J": 3,
         "L": 6,
         "max_order": 2,
-        "shape": 32 
+        "shape": 32
     }
 }

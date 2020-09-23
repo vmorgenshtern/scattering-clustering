@@ -35,6 +35,11 @@ DEFAULTS = {
         "num_candidates": 10000,
         "num_reps": 1000,
         "num_clusters": 10
+    },
+    "scattering": {
+        "J": 3,
+        "L": 6,
+        "max_order": 2,
+        "shape": 32 
     }
-
 }

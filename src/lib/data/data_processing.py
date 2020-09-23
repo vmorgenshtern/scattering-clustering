@@ -72,7 +72,8 @@ def remove_class_data(data, labels, label=0, verbose=1):
 
 
 
-def convert_images_to_scat(images, scattering, device, equalize=False, batch_size=None):
+def convert_images_to_scat(images, scattering, device, equalize=False,
+                           batch_size=None, pad_size=32):
     """
     Args:
     -----
@@ -95,8 +96,8 @@ def convert_images_to_scat(images, scattering, device, equalize=False, batch_siz
 
     # preprocessing
     images = torch.Tensor(images).to(device)
-    if(images.shape[-2] < 32 or images.shape[-1] < 32):
-        padded_imgs = pad_img(images, target_shape=(32,32)).squeeze()
+    if(pad_size > 0):
+        padded_imgs = pad_img(images, target_shape=(pad_size,pad_size)).squeeze()
     else:
         padded_imgs = images.squeeze()
     padded_imgs = padded_imgs.to(device)
@@ -124,7 +125,7 @@ def convert_images_to_scat(images, scattering, device, equalize=False, batch_siz
     return scat_features
 
 
-def convert_loader_to_scat(loader, scattering, device, equalize=False, verbose=0):
+def convert_loader_to_scat(loader, scattering, device, equalize=False, verbose=0, pad_size=32):
     """
     Converting all images from a data loader to the scattering domain
 
@@ -158,7 +159,8 @@ def convert_loader_to_scat(loader, scattering, device, equalize=False, verbose=0
     for i, (cur_imgs, cur_lbls) in enumerate(iterator):
 
         # preprocessing
-        padded_imgs = pad_img(cur_imgs, target_shape=(32,32)).squeeze()
+        if(pad_size > 0):
+            padded_imgs = pad_img(cur_imgs, target_shape=(pad_size,pad_size)).squeeze()
         padded_imgs = padded_imgs.to(device)
 
         # scattering forward

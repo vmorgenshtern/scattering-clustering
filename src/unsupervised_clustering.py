@@ -42,7 +42,8 @@ def clustering_experiment(dataset_name, params, verbose=0):
 
     # computing scattering representations
     t0 = time.time()
-    scattering_net, _ = scattering_layer()
+    scattering_net, _ = scattering_layer(J=params.J, shape=(params.shape, params.shape),
+                                         max_order=params.max_order, L=params.L)
     scattering_net = scattering_net.cuda() if device.type == 'cuda' else scattering_net
     if verbose > 0: print("Computing scattering features for dataset...")
     scat_features  = convert_images_to_scat(imgs, scattering=scattering_net,

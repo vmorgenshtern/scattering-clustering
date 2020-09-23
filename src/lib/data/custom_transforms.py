@@ -29,7 +29,7 @@ def pad_img(img, target_shape=(32,32)):
 
     if(len(img.shape)==3):
         img = img.view(img.shape[0], 1, img.shape[1], img.shape[2])
-    if(img.shape[-2:] == (32,32)):
+    if(img.shape[-2:] == target_shape):
         return img
 
     img_padded = -1*torch.ones(size=(img.shape[0], img.shape[1], *target_shape))

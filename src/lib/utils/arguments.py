@@ -93,6 +93,13 @@ def process_clustering_arguments():
     parser.add_argument('--equalize', help="If True, scattering features are equalized so that " \
                         "features for the same path are on the same scale.")
 
+    # scattering
+    parser.add_argument('--J', help="Support of the scattering features", type=int)
+    parser.add_argument('--max_order', help="Max number of cascaded wavelets and modulus", type=int)
+    parser.add_argument('--L', help="Number of rotations to evaluate", type=int)
+    parser.add_argument('--shape', help="Shape (S,S) of the input features to the " \
+                        "scattering network", type=int)
+
     # clustering parameters
     parser.add_argument('--num_candidates', help="Number of sample candidates for the sampling " \
                         "stage of the USPEC algorithm.", type=int)
@@ -125,6 +132,8 @@ def process_clustering_arguments():
     cl_params = vars(args)
     for p in def_params["data"]:
         params[p] = cl_params[p] if(cl_params[p] is not None) else def_params["data"][p]
+    for p in def_params["scattering"]:
+        params[p] = cl_params[p] if(cl_params[p] is not None) else def_params["scattering"][p]
     for p in def_params["clustering"]:
         params[p] = cl_params[p] if(cl_params[p] is not None) else def_params["clustering"][p]
     params = argparse.Namespace(**params)

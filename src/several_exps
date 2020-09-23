@@ -8,8 +8,8 @@ for d in "${DATASETS[@]}";
 do
   for i in "${ITER[@]}";
   do
-    python baseline_clustering.py --method k_means --dataset_name $d --verbose 0 --random_seed $i
-    # CUDA_VISIBLE_DEVICES=5 python unsupervised_clustering.py --dataset_name usps --verbose 1 --poc_preprocessing $p \
-      # --num_candidates 9000
+    # python baseline_clustering.py --method k_means --dataset_name $d --verbose 0 --random_seed $i
+    CUDA_VISIBLE_DEVICES=5 python unsupervised_clustering.py --dataset_name mnist-test --verbose 1 --random_seed $i --num_candidates 9000
+      #--poc_preprocessing $p
   done
 done

@@ -24,7 +24,7 @@ class USPEC():
     """
 
     def __init__(self, p_interm=5e4, p_final=5e2, n_neighbors=5,
-                 num_clusters=10, num_iters=100):
+                 num_clusters=10, num_iters=100, random_seed=0):
         """
         Initializer of the clustering method
 
@@ -43,6 +43,9 @@ class USPEC():
         num_iters: integer
             maximum number of iterations to compute in the K-means algorithm
         """
+
+        self.random_seed = random_seed
+        np.random.seed(seed=random_seed)
 
         # parameters for represnetative sampling
         self.p_interm = p_interm
@@ -143,7 +146,8 @@ class USPEC():
 
         # step 2: obtainig representatives using k-meanss
         kmeans = MiniBatchKMeans(n_clusters=int(self.p_final), max_iter=100,
-                                 batch_size=int(self.p_interm//100)).fit(candidates)
+                                 batch_size=int(self.p_interm//100),
+                                 random_state=self.random_seed).fit(candidates)
         representatives = kmeans.cluster_centers_
 
         return representatives, candidates
@@ -251,7 +255,8 @@ class USPEC():
                                        axis=1, keepdims=True) + eps)
 
         # k-means
-        kmeans = KMeans(n_clusters=self.num_clusters, max_iter=self.num_iters, n_jobs=-1)
+        kmeans = KMeans(n_clusters=self.num_clusters, max_iter=self.num_iters,
+                        n_jobs=-1, random_state=self.random_seed)
         kmeans.fit(all_eigenvec)
         labels = kmeans.labels_
 

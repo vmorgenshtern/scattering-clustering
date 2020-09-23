@@ -61,7 +61,8 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
     # clustering using Ultra-Scalable Spectral Clustering
     t2 = time.time()
     uspec = USPEC(p_interm=params.num_candidates, p_final=params.num_reps,
-                  n_neighbors=5, num_clusters=params.num_clusters, num_iters=100)
+                  n_neighbors=5, num_clusters=params.num_clusters,
+                  num_iters=100, random_seed=random_seed)
     preds = uspec.cluster(data=proj_data, verbose=verbose)
     t3 = time.time()
 
@@ -88,6 +89,7 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
         cur_exp = {}
         cur_exp["params"] = {}
         cur_exp["params"]["dataset"] = dataset_name
+        cur_exp["params"]["random_seed"] = random_seed
         params = vars(params)
         for p in params:
             cur_exp["params"][p] = params[p]
@@ -109,7 +111,7 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
 
 if __name__ == "__main__":
     os.system("clear")
-    dataset_name, verbose, params, random_seed = process_clustering_arguments()
+    dataset_name, verbose, random_seed, params = process_clustering_arguments()
     print(params)
 
     clustering_experiment(dataset_name=dataset_name, params=params,

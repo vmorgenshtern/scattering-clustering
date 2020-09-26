@@ -48,12 +48,12 @@ def baseline_clustering(dataset_name, method, verbose, random_seed):
 
     elif(method == "spectral_clustering"):
         clusterer = SpectralClustering(n_clusters=10, random_state=random_seed,
-                                       verbose=verbose)
-        clusterer = clusterer.fit(X)
+                                       affinity='nearest_neighbors', n_neighbors=5)
+        clusterer = clusterer.fit(imgs)
 
     elif(method == "dbscan"):
-        clusterer = DBSCAN(eps=3, min_samples=2, verbose=verbose)
-        clusterer = clusterer.fit(X)
+        clusterer = DBSCAN(eps=3, min_samples=2)
+        clusterer = clusterer.fit(imgs)
 
     preds = clusterer.labels_
     t1 = time.time()

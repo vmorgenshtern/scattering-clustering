@@ -51,7 +51,8 @@ def extract_results(dataset_name, method, poc_preprocessing):
 
     # loading data
     if(method == "pipeline"):
-        fname = f"{dataset_name}_{poc_preprocessing}_clustering_results.json"
+        poc_flag = "poc" if poc_preprocessing == True else ""
+        fname = f"{dataset_name}_{poc_flag}_clustering_results.json"
     else:
         fname = f"{method}_{dataset_name}_results.json"
     fpath = os.path.join(os.getcwd(), "results", fname)

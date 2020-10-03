@@ -9,8 +9,11 @@ __pycache__/
 # my own ignores
 .ftpconfig
 paper
+plots
+
 aux.py
 *.json
+
 
 # Distribution / packaging
 .Python

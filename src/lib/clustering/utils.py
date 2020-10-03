@@ -10,6 +10,7 @@ from tqdm import tqdm
 import numpy as np
 from numba import jit
 from matplotlib import pyplot as plt
+from scipy.optimize import linear_sum_assignment
 import sklearn.metrics as metrics
 
 
@@ -19,10 +20,36 @@ def compute_clustering_metrics(preds, labels):
     """
 
     acc = compute_cluster_accuracy_relaxed(predictions=preds, labels=labels)
+    # acc = compute_cluster_accuracy(predictions=preds, labels=labels)
     score = metrics.adjusted_rand_score(preds, labels)
     nmi = metrics.normalized_mutual_info_score(labels_true=labels, labels_pred=preds)
 
     return score, acc, nmi
+
+
+def compute_cluster_accuracy(predictions, labels):
+    """
+    Computing the clustering accuracy. THe best permutation is given by the
+    Hungarian algorithm for optimum matching
+
+    Args:
+    -----
+    predictions, labels: numpy array
+        one dimensional arrays containing the prediceted and ground truth
+        cluster assignments respectively
+    """
+
+    # computing permutation matrix
+    D = max(predictions.max(), labels.max()) + 1
+    w = np.zeros((D, D), dtype=np.int64)
+    for i in range(len(predictions)):
+        w[predictions[i], labels[i]] += 1
+
+    # computing best permutation and accuracy figure
+    ind = linear_sum_assignment(w.max() - w)
+    accuracy = sum([w[i, j] for i, j in ind]) * 100 / len(predictions)
+
+    return accuracy
 
 
 def compute_cluster_accuracy_relaxed(predictions, labels):

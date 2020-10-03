@@ -63,7 +63,7 @@ def baseline_clustering(dataset_name, method, verbose, random_seed):
                                                                          labels=labels)
     print(f"Clustering Accuracy: {round(cluster_acc,3)}")
     print(f"Clustering ARI Score: {round(cluster_score,3)}")
-    print(f"Clustering ARI Score: {round(cluster_nmi,3)}")
+    print(f"Clustering NMI Score: {round(cluster_nmi,3)}")
 
 
     # loading previous results, if any

@@ -9,7 +9,8 @@ CONFIG = {
     "paths": {
         "exp_path": "../experiments",
         "data_path": "../data",
-        "results_path": "results"
+        "results_path": "results",
+        "plots_path": "plots"
     },
     "random_seed": 13,
     "num_workers": 4

@@ -80,7 +80,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle="", fig=None,
-                                 ax=None, legend=None):
+                                 ax=None, legend=None, savefig=None, figsize=None):
     """
     Computing plots that display the eigenvalue distribution as a histogram
 
@@ -98,7 +98,8 @@ def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle=""
 
     if(fig is None or ax is None):
         fig, ax = plt.subplots(1,1)
-        fig.set_size_inches(12,5)
+        if(figsize is not None):
+            fig.set_size_inches(*figsize)
         fig.suptitle(suptitle)
 
     if(bins is None):
@@ -116,6 +117,9 @@ def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle=""
     ax.set_xlabel("Magnitude of eigenvalues")
     ax.set_ylabel("Number of eigenvalues")
     ax.set_yscale("log")
+
+    if(savefig is not None):
+        plt.savefig(savefig)
 
     return fig, ax, bins
 
@@ -154,6 +158,39 @@ def compute_eigenvalue_cdf(eigenvalues, title=None, suptitle="", fig=None, ax=No
         ax.set_title(title)
     ax.set_xlabel("Number of eigenvalues")
     ax.set_ylabel("Accumulated variance")
+
+    return fig, ax
+
+
+def display_principal_angles_histogram(angles, fig=None, ax=None, title="", legend=None,
+                                       corrs=True, xlabel="", ylabel="", yscale="log",
+                                       savefig=None):
+    """
+    Displaying a historgram with the principal angle distribution
+    """
+
+    if(fig is None):
+        fig, ax = plt.subplots(1,1)
+        # fig.set_size_inches(6,6)
+
+    if(corrs):
+        angles = np.cos(angles.tolist())
+        bins = np.linspace(start=0, stop=1., num=50)
+    else:
+        bins = np.linspace(start=0, stop=1.6, num=40)
+
+    if(legend is None):
+        ax.hist(angles, bins)
+    else:
+        ax.hist(angles, bins, label=legend)
+        ax.legend(loc="best")
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_yscale(yscale)
+
+    if(savefig is not None):
+        plt.savefig(savefig)
 
     return fig, ax
 

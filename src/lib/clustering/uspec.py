@@ -145,8 +145,10 @@ class USPEC():
         candidates = data[rand_idx, :]
 
         # step 2: obtainig representatives using k-meanss
+        # kmeans = KMeans(n_clusters=self.num_clusters, max_iter=100,
+        #                 n_jobs=-1, random_state=self.random_seed).fit(candidates)
         kmeans = MiniBatchKMeans(n_clusters=int(self.p_final), max_iter=100,
-                                 batch_size=int(self.p_interm//100),
+                                 batch_size=int(self.p_interm//20),
                                  random_state=self.random_seed).fit(candidates)
         representatives = kmeans.cluster_centers_
 

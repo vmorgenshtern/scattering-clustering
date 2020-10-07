@@ -6,6 +6,7 @@ Custom transforms and augmentations
 
 import numpy as np
 import torch
+import cv2
 
 
 def pad_mnist(img):
@@ -42,3 +43,18 @@ def pad_img(img, target_shape=(32,32)):
     img_padded[:,:, idx_top:-idx_bottom, idx_left:-idx_right] = img
 
     return img_padded
+
+
+def downscale_img(img, target_shape=(32,32)):
+    """
+    Downsscaling an image to fit the desired shape
+    """
+
+    if(torch.is_tensor(img)):
+        img = img.numpy()
+    shape_y, shape_x = img.shape[-2], img.shape[-1]
+    fy, fx = target_shape[0] / shape_y,  target_shape[1] / shape_x
+    downscaled_img = cv2.resize(img, None, fx=fx, fy=fy,
+                                interpolation = cv2.INTER_CUBIC)
+
+    return downscaled_img

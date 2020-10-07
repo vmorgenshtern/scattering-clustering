@@ -8,6 +8,7 @@ import os
 import json
 import time
 
+import numpy as np
 from sklearn.cluster import KMeans, SpectralClustering, DBSCAN
 
 from lib.clustering.utils import compute_clustering_metrics
@@ -36,18 +37,19 @@ def baseline_clustering(dataset_name, method, verbose, random_seed):
                                     dataset_name=dataset_name,
                                     valid_size=0)
     imgs, labels = dataset.get_all_data()
+    num_clusters = len(np.unique(labels))
     n_imgs = len(labels)
     imgs = imgs.reshape(n_imgs, -1)
 
     # clustering dataset samples
     t0 = time.time()
     if(method == "k_means"):
-        clusterer = KMeans(n_clusters=10, random_state=random_seed,
+        clusterer = KMeans(n_clusters=num_clusters, random_state=random_seed,
                            verbose=verbose)
         clusterer = clusterer.fit(imgs)
 
     elif(method == "spectral_clustering"):
-        clusterer = SpectralClustering(n_clusters=10, random_state=random_seed,
+        clusterer = SpectralClustering(n_clusters=num_clusters, random_state=random_seed,
                                        affinity='nearest_neighbors', n_neighbors=5)
         clusterer = clusterer.fit(imgs)
 

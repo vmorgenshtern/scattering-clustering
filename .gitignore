@@ -10,6 +10,7 @@ __pycache__/
 .ftpconfig
 paper
 plots
+CIFAR_Clustering
 
 aux.py
 *.json

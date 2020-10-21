@@ -240,7 +240,7 @@ class USPEC():
         Dx = sp.sparse.csr_matrix((dx, (idx, idx)))
         Wy =graph.T @ Dx @ graph
 
-        # compting normalized cut eigenvectors
+        # converting affinity into graph laplacian
         idx = np.arange(Wy.shape[0])
         d = 1/np.sqrt(np.sum(Wy, axis=1) + eps)
         D = sp.sparse.csr_matrix((d, (idx, idx)))

@@ -26,11 +26,19 @@ def process_arguments():
                         "preprocessing step to the clustering algorithm")
     parser.add_argument('--method', help="baseline clustering method: ['k_means', " \
                         "'spectral_clustering', 'dbscan', 'pipeline']", default="k_means")
+    parser.add_argument('--fname', help="Name of the file with current results to process",
+                        default="")
     args = parser.parse_args()
 
     dataset_name = args.dataset_name
     method = args.method
     poc_preprocessing = args.poc_preprocessing
+    fname = args.fname
+
+    if(len(fname) > 0):
+        fpath = os.path.join(os.getcwd(), "results", fname)
+        assert os.path.exists(fpath), f"Given file: {fname} "\
+            "does not exists in 'results' directory"
 
     poc_preprocessing = (poc_preprocessing == "True") if poc_preprocessing != None else None
     assert dataset_name in ["mnist", "fashion_mnist", 'svhn', 'usps', 'mnist-test', \
@@ -40,10 +48,10 @@ def process_arguments():
     assert method in ["k_means", "spectral_clustering", "dbscan", "pipeline"]
 
 
-    return dataset_name, method, poc_preprocessing
+    return dataset_name, method, poc_preprocessing, fname
 
 
-def extract_results(dataset_name, method, poc_preprocessing):
+def extract_results(dataset_name, method, poc_preprocessing, fname):
     """
     Loading the results corresponding to the parameters. Extracting results and
     running times for all runs with the parameters. Computing mean and std_dev values
@@ -104,7 +112,7 @@ def extract_results(dataset_name, method, poc_preprocessing):
 
 if __name__ == "__main__":
     os.system("clear")
-    dataset_name, method, poc_preprocessing = process_arguments()
-    extract_results(dataset_name, method, poc_preprocessing)
+    dataset_name, method, poc_preprocessing, fname = process_arguments()
+    extract_results(dataset_name, method, poc_preprocessing, fname)
 
 #

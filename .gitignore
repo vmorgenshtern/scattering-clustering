@@ -12,6 +12,7 @@ paper
 plots
 CIFAR_Clustering
 
+logs.txt
 aux.py
 *.json
 

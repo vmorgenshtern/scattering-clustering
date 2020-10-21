@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 # PROCESS=(True False)
-DATASETS=(mnist)
-ITER=(0 1 2)
-NUM_DIMS=(0 1 2 3)
+DATASETS=(fashion_mnist)
+ITER=(0 1 2 3 4)
+NUM_DIMS=(1)
 #
 for d in "${DATASETS[@]}";
 do
@@ -12,9 +12,8 @@ do
     for i in "${ITER[@]}";
     do
       # python baseline_clustering.py --method dbscan --dataset_name $d --verbose 0 --random_seed $i
-      CUDA_VISIBLE_DEVICES=7 python unsupervised_clustering.py --dataset_name $d --verbose 1 --random_seed $i --num_candidates 10000 \
-                                                               --num_reps 1000 --num_clusters 10 --L 8 --num_dims $n
-        # --poc_preprocessing $p
+      CUDA_VISIBLE_DEVICES=6 python unsupervised_clustering.py --dataset_name $d --verbose 1 --random_seed $i --num_candidates 10000 \
+                                                               --num_reps 1000 --num_clusters 10 --L 8 --num_dims $n --pca True --pca_dims 1000
     done
   done
 done

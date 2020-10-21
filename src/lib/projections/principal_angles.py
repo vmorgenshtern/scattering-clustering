@@ -71,6 +71,17 @@ def compute_principal_angles(P, Q, n_dims=None):
     return principal_angles
 
 
+def subspace_affinity(angles):
+    """
+    Computing the affinity between two spaces given the principal angles
+    """
+
+    angles = np.array(angles, dtype=float)
+    corrs = np.sum( np.power( np.cos(angles),2) )
+    affinity = np.sqrt(corrs / len(angles))
+
+    return affinity
+
 
 def compute_angle_statistics(angles):
     """

@@ -14,7 +14,7 @@ from lib.data.data_loading import ClassificationDataset
 from lib.data.data_processing import convert_images_to_scat
 from lib.projections.dimensionality_reduction import compute_eigendecomposition
 from lib.projections.principal_angles import compute_principal_angles, \
-    compute_angle_statistics, display_principal_angle_statistics
+    compute_angle_statistics, display_principal_angle_statistics, subspace_affinity
 from lib.projections.projection_orthogonal_complement import get_classwise_data
 from lib.scattering.scattering_methods import scattering_layer
 from lib.utils.visualizations import compute_eigenvalue_histogram, \
@@ -80,7 +80,7 @@ def compute_scattering_geometrical_plots():
 
     # computing the principal angles between class 0 and class 2
     # both in the image and in the scattering domain
-    n_angles = 50
+    n_angles = 10
     principal_angles_img = compute_principal_angles(P=e_vect_img_0,
                                                     Q=e_vect_img_2,
                                                     n_dims=n_angles)
@@ -91,6 +91,8 @@ def compute_scattering_geometrical_plots():
     stats_scat = compute_angle_statistics(principal_angles_scat)
     stats_df_img = display_principal_angle_statistics(stats_img)
     stats_df_scat = display_principal_angle_statistics(stats_scat)
+    affinities_img = [subspace_affinity(principal_angles_img[:i]) for i in range(1,10)]
+    affinities_scat = [subspace_affinity(principal_angles_scat[:i]) for i in range(1,10)]
 
     #
     savepath = os.path.join(CONFIG["paths"]["plots_path"], "principal_angles_img.png")
@@ -112,6 +114,10 @@ def compute_scattering_geometrical_plots():
     print("\n\nScattering Principal Angles")
     print(principal_angles_scat)
     print(stats_df_scat)
+    print("\nSubspace Affinities Img")
+    print(affinities_img)
+    print("\nSubspace Affinities Scat")
+    print(affinities_scat)
 
     return
 

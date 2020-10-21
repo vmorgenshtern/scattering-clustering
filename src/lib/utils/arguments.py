@@ -78,6 +78,8 @@ def process_clustering_arguments():
         f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
         f"'fashion_mnist', 'usps', 'mnist-test', 'cifar'] are allowed"
     args.equalize = (args.equalize == "True") if args.equalize != None else None
+    args.pca = (args.pca == "True") if args.pca != None else None
+    args.uspec = (args.uspec == "True") if args.uspec != None else None
     args.poc_preprocessing = (args.poc_preprocessing == "True") if args.poc_preprocessing != None else None
     args.scattering = (args.scattering == "True") if args.scattering != None else None
 

@@ -10,6 +10,8 @@ import argparse
 
 import numpy as np
 
+from CONFIG import CONFIG
+
 
 def process_arguments():
     """
@@ -19,51 +21,43 @@ def process_arguments():
     parser = argparse.ArgumentParser()
 
     # general parameters
+    parser.add_argument('--fname', help="Name of the file with current results to process")
     parser.add_argument('--dataset_name', help="Name of the dataset to classify or " \
                         "cluster: ['mnist', 'fashion_mnist', 'svhn', 'usps', 'mnist-test']",
                         default="mnist")
+    parser.add_argument('--scattering', help="If True, clustering is performend on "\
+                        "scattering feature reperesentation. Otherwise on images")
     parser.add_argument('--poc_preprocessing', help="if True, the POC algorithm is a "\
                         "preprocessing step to the clustering algorithm")
-    parser.add_argument('--method', help="baseline clustering method: ['k_means', " \
-                        "'spectral_clustering', 'dbscan', 'pipeline']", default="k_means")
-    parser.add_argument('--fname', help="Name of the file with current results to process",
-                        default="")
+    parser.add_argument('--uspec', help="If True, U-SPEC algorithm is used for clustering. " \
+                        "Otherwise K-Means performs the clustering")
+
     args = parser.parse_args()
 
-    dataset_name = args.dataset_name
-    method = args.method
-    poc_preprocessing = args.poc_preprocessing
     fname = args.fname
+    dataset_name = args.dataset_name
+    scattering = (args.scattering == "True")
+    poc_preprocessing = (args.poc_preprocessing == "True")
+    uspec = (args.uspec == "True")
 
-    if(len(fname) > 0):
-        fpath = os.path.join(os.getcwd(), "results", fname)
-        assert os.path.exists(fpath), f"Given file: {fname} "\
-            "does not exists in 'results' directory"
-
-    poc_preprocessing = (poc_preprocessing == "True") if poc_preprocessing != None else None
-    assert dataset_name in ["mnist", "fashion_mnist", 'svhn', 'usps', 'mnist-test', \
-                            'coil-100', 'cifar'], \
+    fpath = os.path.join(CONFIG["paths"]["results_path"], fname)
+    assert os.path.exists(fpath), f"Given file: {fname} does not exists in 'results' directory"
+    assert dataset_name in ["mnist", "fashion_mnist", 'usps', 'mnist-test'],\
         f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
-        f"'fashion_mnist', 'usps', 'mnist-test', 'cifar'] are allowed"
-    assert method in ["k_means", "spectral_clustering", "dbscan", "pipeline"]
+        f"'fashion_mnist', 'usps', 'mnist-test'] are allowed"
+
+    return fname, dataset_name, scattering, poc_preprocessing, uspec
 
 
-    return dataset_name, method, poc_preprocessing, fname
 
-
-def extract_results(dataset_name, method, poc_preprocessing, fname):
+def extract_results(fname, dataset_name, scattering, poc_preprocessing, uspec):
     """
     Loading the results corresponding to the parameters. Extracting results and
     running times for all runs with the parameters. Computing mean and std_dev values
     """
 
     # loading data
-    if(method == "pipeline"):
-        poc_flag = "poc" if poc_preprocessing == True else ""
-        fname = f"{dataset_name}_{poc_flag}_clustering_results.json"
-    else:
-        fname = f"{method}_{dataset_name}_results.json"
-    fpath = os.path.join(os.getcwd(), "results", fname)
+    fpath = os.path.join(CONFIG["paths"]["results_path"], fname)
     if(not os.path.exists(fpath)):
         print(f"ERROR! Results file: {fname} does not exists...")
         exit()
@@ -71,40 +65,72 @@ def extract_results(dataset_name, method, poc_preprocessing, fname):
         experiments = json.load(f)
 
     # extracting relevant inforamtion
-    acc, nmi, ari, time = [], [], [], []
+    acc, nmi, ari = [], [], []
+    scat_time, prep_time, cluster_time, total_time = [], [], [], []
     for exp_key in experiments:
         cur_exp = experiments[exp_key]
+        params = cur_exp["params"]
+        # checking that fields 'scat..', 'poc_prep..' & 'uspec' values match parameters
+        if(params["dataset"] != dataset_name or params["scattering"] != scattering or
+           params["poc_preprocessing"] != poc_preprocessing or params["uspec"] != uspec):
+           continue
         acc.append(cur_exp["results"]["cluster_acc"])
         ari.append(cur_exp["results"]["cluster_ari"])
         nmi.append(cur_exp["results"]["cluster_nmi"])
-        time.append(cur_exp["timing"]["total"])
+        scat_time.append(cur_exp["timing"]["scattering"])
+        prep_time.append(cur_exp["timing"]["preprocessing"])
+        cluster_time.append(cur_exp["timing"]["clustering"])
+        total_time.append(cur_exp["timing"]["total"])
+    if(len(acc) == 0):
+        print(f"No expriments found in file: {fname} matching params:\n" \
+              f"    dataset_name: {dataset_name}\n    scattering: {scattering}\n" \
+              f"    poc_preprocessing: {poc_preprocessing}\n    uspec:{uspec}")
+        exit()
 
-    acc_mean, acc_std = np.mean(acc), np.std(acc)
-    nmi_mean, nmi_std = np.mean(nmi), np.std(nmi)
-    ari_mean, ari_std = np.mean(ari), np.std(ari)
-    time_mean, time_std = np.mean(time), np.std(time)
+    # measuring mean and variance for all metrics
+    compute_mean_var = lambda x: (np.mean(x), np.std(x))
+    acc_mean, acc_std = compute_mean_var(acc)
+    nmi_mean, nmi_std = compute_mean_var(nmi)
+    ari_mean, ari_std = compute_mean_var(ari)
+    scat_time_mean, scat_time_std = compute_mean_var(scat_time)
+    prep_time_mean, prep_time_std = compute_mean_var(prep_time)
+    cluster_time_mean, cluster_time_std = compute_mean_var(cluster_time)
+    time_mean, time_std = compute_mean_var(total_time)
 
     # saving final results
-    fname = os.path.join(os.getcwd(), "results", "paper_results.json")
-    if(os.path.exists(fname)):
-        final_data = json.load(open(fname))
+    results_file = os.path.join(CONFIG["paths"]["results_path"], "_paper_results.json")
+    if(os.path.exists(results_file)):
+        final_data = json.load(open(results_file))
     else:
         final_data = {}
 
-    if(method == "pipeline" and poc_preprocessing == True):
-        method = "pipeline-poc"
-    elif(method == "pipeline" and poc_preprocessing != True):
-        method = "pipeline"
-    final_data[f"{dataset_name}_{method}"] = {}
-    final_data[f"{dataset_name}_{method}"]["acc_mean"] = acc_mean
-    final_data[f"{dataset_name}_{method}"]["acc_std"] = acc_std
-    final_data[f"{dataset_name}_{method}"]["ari_mean"] = ari_mean
-    final_data[f"{dataset_name}_{method}"]["ari_std"] = ari_std
-    final_data[f"{dataset_name}_{method}"]["nmi_mean"] = nmi_mean
-    final_data[f"{dataset_name}_{method}"]["nmi_std"] = nmi_std
-    final_data[f"{dataset_name}_{method}"]["time_mean"] = time_mean
-    final_data[f"{dataset_name}_{method}"]["time_std"] = time_std
-    with open(fname, "w") as f:
+    exp_name = f"dataset_{dataset_name}_scattering_{scattering}_" \
+               f"poc_{poc_preprocessing}_uspec_{uspec}"
+    params = {
+        "dataset_name": dataset_name,
+        "scattering": scattering,
+        "poc_preprocessing": poc_preprocessing,
+        "uspec": uspec,
+        "fname": fname
+    }
+    results = {
+        "acc_mean": acc_mean, "acc_std": acc_std,
+        "ari_mean": ari_mean, "ari_std": ari_std,
+        "nmi_mean": nmi_mean, "nmi_std": nmi_std
+     }
+    timing = {
+        "scattering_mean": scat_time_mean, "scattering_std": scat_time_std,
+        "preprocessing_mean": prep_time_mean, "preprocessing_std": prep_time_std,
+        "clustering_mean": cluster_time_mean, "clustering_std": cluster_time_std,
+        "total_mean": time_mean, "total_std": time_std,
+    }
+    final_data[exp_name] = {
+        "params": params,
+        "results": results,
+        "timing": timing
+    }
+
+    with open(results_file, "w") as f:
         json.dump(final_data, f)
 
     return
@@ -112,7 +138,8 @@ def extract_results(dataset_name, method, poc_preprocessing, fname):
 
 if __name__ == "__main__":
     os.system("clear")
-    dataset_name, method, poc_preprocessing, fname = process_arguments()
-    extract_results(dataset_name, method, poc_preprocessing, fname)
+    fname, dataset_name, scattering, poc_preprocessing, uspec = process_arguments()
+    extract_results(fname=fname, dataset_name=dataset_name, scattering=scattering,
+                    poc_preprocessing=poc_preprocessing, uspec=uspec)
 
 #

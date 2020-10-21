@@ -33,12 +33,13 @@ def log_function(func):
     return try_call_log
 
 
-def print_(message, message_type="info"):
+def print_(message, message_type="info", verbose=True):
     """
     Overloads the print method so that the message is written both in logs file and console
     """
 
-    print(message)
+    if(verbose):
+        print(message)
     if(LOGGER is not None):
         LOGGER.log_info(message, message_type)
     return

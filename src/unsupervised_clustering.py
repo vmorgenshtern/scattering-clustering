@@ -11,6 +11,7 @@ import time
 
 import numpy as np
 import torch
+from sklearn.cluster import KMeans
 
 from lib.clustering.uspec import USPEC
 from lib.clustering.utils import compute_clustering_metrics
@@ -20,11 +21,12 @@ from lib.dimensionality_reduction import pca
 from lib.projections.POC import POC
 from lib.scattering.scattering_methods import scattering_layer
 from lib.utils.arguments import process_clustering_arguments
-from lib.utils.logger import print_, Logger
+from lib.utils.logger import print_, Logger, log_function
 from lib.utils.utils import create_directory
 from CONFIG import CONFIG
 
 
+@log_function
 def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
     """
     Performing a clustering experiment (with possible POC preprocessing) on scattering
@@ -45,7 +47,7 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
         scattering_net, _ = scattering_layer(J=params.J, shape=(params.shape, params.shape),
                                              max_order=params.max_order, L=params.L)
         scattering_net = scattering_net.cuda() if device.type == 'cuda' else scattering_net
-        if verbose > 0: print_("Computing scattering features for dataset...")
+        print_("Computing scattering features for dataset...", verbose=verbose)
         data  = convert_images_to_scat(imgs, scattering=scattering_net,
                                        device=device, equalize=params.equalize,
                                        batch_size=params.batch_size,
@@ -56,7 +58,7 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
 
     # reducing dimensionality of scattering features using pca
     if(params.pca == True):
-        if verbose > 0: print_(f"Reducidng dimensionality using PCA to {params.pca_dims}")
+        print_(f"Reducidng dimensionality using PCA to {params.pca_dims}", verbose=verbose)
         n_feats = data.shape[0]
         data = data.reshape(n_feats, -1)
         data = pca(data=data, target_dimensions=params.pca_dims)
@@ -64,8 +66,7 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
     # POC preprocessing: removing the top directions of variance as a preprocessing step
     t1 = time.time()
     if(params.poc_preprocessing):
-        if verbose > 0:
-            print_(f"Applying the POC algorithm removing {params.num_dims} directions")
+        print_(f"POC algorithm removing {params.num_dims} directions", verbose=verbose)
         poc = POC()
         poc.fit(data=data)
         proj_data = poc.transform(data=data, n_dims=params.num_dims)
@@ -75,31 +76,31 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
     # clustering using Ultra-Scalable Spectral Clustering
     t2 = time.time()
     if(params.uspec):
-        print_(f"Clustering using U-SPEC")
+        print_(f"Clustering using U-SPEC", verbose=verbose)
         uspec = USPEC(p_interm=params.num_candidates, p_final=params.num_reps,
                       n_neighbors=5, num_clusters=params.num_clusters,
                       num_iters=100, random_seed=random_seed)
         preds = uspec.cluster(data=proj_data, verbose=verbose)
     else:
-        print_(f"Clustering using K-Means")
-        kmeans = KMeans(n_clusters=params.num_clusters, random_state=random_seed, verbose=verbose)
+        print_(f"Clustering using K-Means", verbose=verbose)
+        kmeans = KMeans(n_clusters=params.num_clusters, random_state=random_seed)
         kmeans = kmeans.fit(proj_data)
         preds = kmeans.labels_
     t3 = time.time()
 
     cluster_score, cluster_acc, cluster_nmi = compute_clustering_metrics(preds=preds,
                                                                          labels=labels)
-    print_(f"Clustering Accuracy: {round(cluster_acc,3)}")
-    print_(f"Clustering ARI Score: {round(cluster_score,3)}")
-    print_(f"Clustering ARI Score: {round(cluster_nmi,3)}")
+    print_(f"Clustering Accuracy: {round(cluster_acc,3)}", verbose=verbose)
+    print_(f"Clustering ARI Score: {round(cluster_score,3)}", verbose=verbose)
+    print_(f"Clustering ARI Score: {round(cluster_nmi,3)}", verbose=verbose)
 
     # loading previous results, if any
     results_path = os.path.join(os.getcwd(), CONFIG["paths"]["results_path"])
     _ = create_directory(results_path)
-    poc = "poc" if params.poc_preprocessing==True else "not-poc"
     if(params.fname != None and len(params.fname) > 0 and params.fname[-5:]==".json"):
         fname = params.fname
     else:
+        poc = "poc" if params.poc_preprocessing==True else "not-poc"
         fname =  f"{dataset_name}_{poc}_clustering_results.json"
     results_file = os.path.join(results_path, fname)
     if(os.path.exists(results_file)):
@@ -127,7 +128,7 @@ def clustering_experiment(dataset_name, params, verbose=0, random_seed=0):
         cur_exp["timing"]["preprocessing"] = t2 - t1
         cur_exp["timing"]["clustering"] = t3 - t2
         cur_exp["timing"]["total"] = t3 - t0
-        print_(cur_exp)
+        print_(cur_exp, verbose=verbose)
         data[f"experiment_{n_exps}"] = cur_exp
         json.dump(data, f)
 

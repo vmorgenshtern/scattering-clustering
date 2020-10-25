@@ -22,6 +22,7 @@ def process_arguments():
 
     # general parameters
     parser.add_argument('--fname', help="Name of the file with current results to process")
+    parser.add_argument('--outfile', help="Name of the file where the results will be stored")
     parser.add_argument('--dataset_name', help="Name of the dataset to classify or " \
                         "cluster: ['mnist', 'fashion_mnist', 'svhn', 'usps', 'mnist-test']",
                         default="mnist")
@@ -35,22 +36,29 @@ def process_arguments():
     args = parser.parse_args()
 
     fname = args.fname
+    outfile = args.outfile
     dataset_name = args.dataset_name
     scattering = (args.scattering == "True")
     poc_preprocessing = (args.poc_preprocessing == "True")
     uspec = (args.uspec == "True")
 
+    # checking that file with input results exists
     fpath = os.path.join(CONFIG["paths"]["results_path"], fname)
     assert os.path.exists(fpath), f"Given file: {fname} does not exists in 'results' directory"
+    # checking that output file (if given) exists and is a json file
+    if(outfile is not None):
+        outpath = os.path.join(CONFIG["paths"]["results_path"], outfile)
+        assert outfile[-5:] == ".json"
+    # checking correctness in other parameters
     assert dataset_name in ["mnist", "fashion_mnist", 'usps', 'mnist-test'],\
         f"ERROR! wrong 'dataset_name' parameter: {dataset_name}.\n Only ['mnist',"\
         f"'fashion_mnist', 'usps', 'mnist-test'] are allowed"
 
-    return fname, dataset_name, scattering, poc_preprocessing, uspec
+    return fname, outfile, dataset_name, scattering, poc_preprocessing, uspec
 
 
 
-def extract_results(fname, dataset_name, scattering, poc_preprocessing, uspec):
+def extract_results(fname, outfile, dataset_name, scattering, poc_preprocessing, uspec):
     """
     Loading the results corresponding to the parameters. Extracting results and
     running times for all runs with the parameters. Computing mean and std_dev values
@@ -98,7 +106,9 @@ def extract_results(fname, dataset_name, scattering, poc_preprocessing, uspec):
     time_mean, time_std = compute_mean_var(total_time)
 
     # saving final results
-    results_file = os.path.join(CONFIG["paths"]["results_path"], "_paper_results.json")
+    if(outfile is None):
+        outfile = "_paper_results.json"
+    results_file = os.path.join(CONFIG["paths"]["results_path"], outfile)
     if(os.path.exists(results_file)):
         final_data = json.load(open(results_file))
     else:
@@ -138,8 +148,8 @@ def extract_results(fname, dataset_name, scattering, poc_preprocessing, uspec):
 
 if __name__ == "__main__":
     os.system("clear")
-    fname, dataset_name, scattering, poc_preprocessing, uspec = process_arguments()
-    extract_results(fname=fname, dataset_name=dataset_name, scattering=scattering,
-                    poc_preprocessing=poc_preprocessing, uspec=uspec)
+    fname, outfile, dataset_name, scattering, poc_preprocessing, uspec = process_arguments()
+    extract_results(fname=fname, outfile=outfile, dataset_name=dataset_name,
+                    scattering=scattering, poc_preprocessing=poc_preprocessing, uspec=uspec)
 
 #

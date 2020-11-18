@@ -1,8 +1,6 @@
 """
 Custom imlementation of the ultra-scalable spectral clustering algorithm (USPEC)
  - 'Ultra-Scalable Spectral Clustering and Ensemble Clustering' Huang et al. 2019
-
-@author: Angel Villar-Corrales
 """
 
 from time import time
@@ -20,7 +18,7 @@ class USPEC():
     """
     Custom imlementation of the ultra-scalable spectral clustering algorithm (USPEC).
     This method is able to scale standard spectral clustering to datasets composed
-    by millions of samples without loosing significant performance. O(N log N)
+    by millions of samples without losing significant performance. O(N log N)
     """
 
     def __init__(self, p_interm=5e4, p_final=5e2, n_neighbors=5,
@@ -183,7 +181,7 @@ class USPEC():
 
         """
         In original paper they use a different approach for the kNN. Nevertheless, we
-        rely on the HNSW graphs, which have shown high efficiency and promise for this task
+        rely on the HNSW graphs, which shows high efficiency for high-dim feature vectors
         """
         # creating hns graph object and fitting features
         m = 8              # minimum number of outgoing edges for each node
@@ -238,7 +236,7 @@ class USPEC():
         idx = np.arange(graph.shape[0])
         dx = 1/(np.sum(graph, axis=1) + eps)
         Dx = sp.sparse.csr_matrix((dx, (idx, idx)))
-        Wy =graph.T @ Dx @ graph
+        Wy = graph.T @ Dx @ graph
 
         # converting affinity into graph laplacian
         idx = np.arange(Wy.shape[0])

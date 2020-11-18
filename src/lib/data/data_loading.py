@@ -1,7 +1,5 @@
 """
 Methods for loading and preprocessing the datasets
-
-@author: Angel Villar-Corrales
 """
 
 import os
@@ -45,7 +43,7 @@ class ClassificationDataset(Dataset):
 
         # checking valid values for the parameters
         assert dataset_name in ["mnist", "svhn", "fashion_mnist", 'usps', 'mnist-test', \
-               'coil-100', 'cifar'], f"Dataset name: {dataset_name} is not a correct value. " \
+               'coil-100'], f"Dataset name: {dataset_name} is not a correct value. " \
                 f"Choose one from ['mnist', 'svhn', 'usps', 'mnist-test', 'coil-100', 'cifar']"
         assert (valid_size >= 0 and valid_size < 1), f"Valid size must be in range [0,1)"
 
@@ -73,14 +71,6 @@ class ClassificationDataset(Dataset):
             train_set = None
             test_set = datasets.MNIST(self.data_path, train=False, download=True,
                                         transform=transformations)
-
-        elif(dataset_name == "cifar"):
-            train_set = datasets.CIFAR10(self.data_path, train=True, download=True,
-                                        transform=transformations)
-            test_set = datasets.CIFAR10(self.data_path, train=False, download=True,
-                                        transform=transformations)
-            train_set.data = train_set.data.transpose(0,3,1,2)
-            test_set.data = test_set.data.transpose(0,3,1,2)
 
         elif(dataset_name == "svhn"):
             train_set = datasets.SVHN(self.data_path, split='train',download=True,

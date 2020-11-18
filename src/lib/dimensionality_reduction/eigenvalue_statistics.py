@@ -1,7 +1,6 @@
-###########################################################
-# Methods for eigenvalue plots and statistics
-# Scattering_Space/lib/dimensionality_reduction
-###########################################################
+"""
+Methods for computing eigendecomposition and other eigenvalue-related functionalities
+"""
 
 import numpy as np
 import pandas as pd

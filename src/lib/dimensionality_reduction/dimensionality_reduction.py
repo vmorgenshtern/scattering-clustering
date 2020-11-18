@@ -1,7 +1,6 @@
-###########################################################
-# Methods for dimensionality reduction
-# Scattering_Space/lib/dimensionality_reduction
-###########################################################
+"""
+Methods for dimensionality reduction
+"""
 
 import os
 

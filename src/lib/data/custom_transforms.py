@@ -1,7 +1,5 @@
 """
 Custom transforms and augmentations
-
-@author: Angel Villar-Corrales
 """
 
 import numpy as np
@@ -11,7 +9,7 @@ import cv2
 
 def pad_mnist(img):
     """
-    Padding a batch of MNIST images [B,C,28,28] to [B,C,32,32]
+    Padding a batch of (Fashion-)MNIST images from [B,C,28,28] to [B,C,32,32]
     """
 
     tensor = torch.tensor((), dtype=torch.double)
@@ -24,7 +22,7 @@ def pad_mnist(img):
 
 def pad_img(img, target_shape=(32,32)):
     """
-    Padding images with zeros so that they end un having the desired shape
+    Padding images so that they end un having the desired shape
     If shape is (32,32) and img are MNIST images, it is equivalent to calling pad_mnist()
     """
 

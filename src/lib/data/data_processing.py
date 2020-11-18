@@ -1,7 +1,5 @@
 """
 Utils for data preprocessing and handling
-
-@author: Angel Villar-Corrales
 """
 
 from tqdm import tqdm

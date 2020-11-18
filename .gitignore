@@ -8,6 +8,7 @@ __pycache__/
 
 # my own ignores
 .ftpconfig
+.ftpignore
 _paper
 cvpr_paper
 cvpr2021AuthorKit

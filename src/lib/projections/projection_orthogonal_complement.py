@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 import sklearn.metrics as metrics
 from sklearn.preprocessing import StandardScaler
 
-from lib.projections.dimensionality_reduction import compute_eigendecomposition
+from lib.dimensionality_reduction.dimensionality_reduction import compute_eigendecomposition
 
 
 def projections_classifier(points, eigenvectors, prototypes, n_directions):

@@ -1,17 +1,12 @@
 """
 Methods, algorithms and auxiliary functions for computing the orientation between
 subspaces and directions of variance
-
-Scattering_Space/lib/projections
-@author: Angel Villar-Corrales
 """
 
 import os
 
 import numpy as np
 import scipy as sc
-
-
 
 def check_colinearity_eigenvectors(eigenvectors, num_eigenvectors, verbose=0):
     """

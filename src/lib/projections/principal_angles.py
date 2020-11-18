@@ -1,8 +1,6 @@
 """
 Methods for computing subspace orientation and correltations through
 the principal angles
-
-@author: Angel Villar-Corrales
 """
 
 import numpy as np

@@ -1,7 +1,7 @@
-############################################################
-# Layers and Utils of scattering transform
-# Patched-Imagenet/Scattering_space/lib/models/scattering_method
-############################################################
+"""
+Methods for intializing ScatNets and other functionalities related to the
+scattering transform
+"""
 
 import kymatio as km
 

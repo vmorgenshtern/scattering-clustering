@@ -1,7 +1,5 @@
 """
 Different methods for data visualization
-
-@author: Angel Villar-Corrales
 """
 
 import numpy as np
@@ -18,8 +16,7 @@ def display_subset_data(imgs, labels, shuffle=True):
 
     if(imgs.shape[1]<=3):
         imgs = imgs.transpose(0,2,3,1).squeeze()
-    # TODO: Write nice un-normalization
-    if(np.min(imgs) < 0):
+    if(np.min(imgs) < 0):  # images are normalited to [-1, 1]
         imgs = (imgs + 1) / 2
 
     if(shuffle):

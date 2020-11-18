@@ -1,8 +1,5 @@
 """
 Class for computing the Projection onto Orthogonal Complement (POC) in a skelear.PCA fashion
-
-Scattering_Space/lib/projections
-@author: Angel Villar-Corrales
 """
 
 import os
@@ -12,7 +9,7 @@ import sklearn.metrics as metrics
 from sklearn.preprocessing import StandardScaler
 
 from lib.projections.projection_orthogonal_complement import compute_prototype
-from lib.projections.dimensionality_reduction import compute_eigendecomposition
+from lib.dimensionality_reduction.dimensionality_reduction import compute_eigendecomposition
 
 
 class POC():

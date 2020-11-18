@@ -1,7 +1,5 @@
 """
 Methods for equalization of the scattering coefficients
-
-@author: Angel Villar-Corrales
 """
 
 import os

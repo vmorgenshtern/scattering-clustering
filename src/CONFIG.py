@@ -6,10 +6,9 @@ Global Configuration for the experiments and default parameters
 # Global Configurations
 CONFIG = {
     "paths": {
-        "exp_path": "../experiments",
         "data_path": "../data",
-        "results_path": "results",
-        "plots_path": "plots"
+        "results_path": "../results",
+        "plots_path": "../plots"
     },
     "random_seed": 13,
     "num_workers": 4

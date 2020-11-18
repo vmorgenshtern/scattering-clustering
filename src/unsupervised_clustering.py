@@ -6,6 +6,8 @@ to the scattering representations of the original small images
 import os
 import json
 import time
+import warnings
+warnings.filterwarnings("ignore")
 
 import numpy as np
 import torch

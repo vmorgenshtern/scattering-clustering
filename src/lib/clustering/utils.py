@@ -6,7 +6,6 @@ import itertools
 from tqdm import tqdm
 
 import numpy as np
-from numba import jit
 from matplotlib import pyplot as plt
 from scipy.optimize import linear_sum_assignment
 import sklearn.metrics as metrics

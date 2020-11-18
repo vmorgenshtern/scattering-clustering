@@ -42,9 +42,9 @@ class ClassificationDataset(Dataset):
         """
 
         # checking valid values for the parameters
-        assert dataset_name in ["mnist", "svhn", "fashion_mnist", 'usps', 'mnist-test', \
-               'coil-100'], f"Dataset name: {dataset_name} is not a correct value. " \
-                f"Choose one from ['mnist', 'svhn', 'usps', 'mnist-test', 'coil-100', 'cifar']"
+        assert dataset_name in ["mnist", "fashion_mnist", 'usps', 'mnist-test'], \
+                f"Dataset name: {dataset_name} is not a correct value. " \
+                f"Choose one from ['mnist', 'usps', 'mnist-test', 'fashion_mnist']"
         assert (valid_size >= 0 and valid_size < 1), f"Valid size must be in range [0,1)"
 
         self.data_path = data_path

@@ -1,7 +1,5 @@
 """
 Utils for data preprocessing and handling
-
-@author: Angel Villar-Corrales
 """
 
 import numpy as np
@@ -97,8 +95,8 @@ def compute_scat_features(data_loader, scattering, device):
     labels = []
 
     for i,(img, label) in enumerate(tqdm(data_loader)):
-
-        img = custom_transforms.pad_mnist(img)
+        # img = custom_transforms.pad_mnist(img)
+        img = custom_transforms.pad_img(img, target_shape=(32,32)).squeeze()
         img = img.to(device)
         img = img.squeeze()
 

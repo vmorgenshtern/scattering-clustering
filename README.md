@@ -88,7 +88,8 @@ Now, we give a short overview of the different files and directories:
 
 ## Quick Guide
 
-In this section, we explain how to use the repository to reproduce the experiments from the paper.
+In this section, we explain how to use the repository to reproduce the experiments from the paper. For other detailed
+guides, we refer to these explanatory [Jupyter Notebooks](https://github.com/SomeRandomUserAccount/ScatClustering/tree/submission_6225/src/notebooks).
 
 ![Image Clustering Evaluation](resources/table.png "Image Clustering Evaluation")
 
@@ -162,8 +163,8 @@ $ python scattering_clustering.py --dataset_name mnist --verbose 1 \
                                   --batch_size 256
 ```
 
-## Contact
+<!-- ## Contact
 
 This project was developed by [Angel Villar-Corrales](http://angelvillarcorrales.com/templates/home.php) and  [Veniamin Morgenshtern](https://machinelearning.tf.fau.de/)
 
-In case of any questions or problems regarding the project or repository, do not hesitate to contact the authors at angelvillarcorrales@gmail.com.
+In case of any questions or problems regarding the project or repository, do not hesitate to contact the authors at angelvillarcorrales@gmail.com. -->

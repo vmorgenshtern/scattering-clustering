@@ -10,7 +10,7 @@ from lib.scattering.equalizations import max_norm_equalization
 from lib.data.custom_transforms import pad_img
 
 
-def get_classwise_data(data, labels, label=0, verbose=0):
+def get_classwise_data(data, labels, label=0, get_ids=False, verbose=0):
     """
     Obtaining features and labels corresponding to a particular class
 
@@ -35,6 +35,9 @@ def get_classwise_data(data, labels, label=0, verbose=0):
     classwise_data = data[idx,:]
     if(verbose>0):
         print(f"There are {len(idx)} datapoints with label {label}")
+
+    if(get_ids):
+        return classwise_data, idx
 
     return classwise_data
 

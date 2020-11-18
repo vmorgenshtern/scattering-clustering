@@ -250,7 +250,7 @@ def display_cluster_features(eigenvalues, prototype=None, disp_prot=False, **kwa
     if("suptitle" in kwargs):
         plt.suptitle(kwargs["suptitle"])
 
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 
     return
 

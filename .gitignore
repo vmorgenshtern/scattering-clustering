@@ -8,7 +8,8 @@ __pycache__/
 
 # my own ignores
 .ftpconfig
-paper
+_paper
+cvpr_paper
 cvpr2021AuthorKit
 plots
 CIFAR_Clustering
@@ -16,6 +17,7 @@ CIFAR_Clustering
 logs.txt
 aux.py
 *.json
+*.zip
 
 
 # Distribution / packaging

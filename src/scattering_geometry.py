@@ -40,7 +40,7 @@ def compute_scattering_geometrical_plots():
 
     # computing scattering representations of complete MNIST dataset
     scattering_net, _ = scattering_layer(J=3, shape=(32, 32),
-                                         max_order=2, L=6)
+                                         max_order=2, L=8)
     scattering_net = scattering_net.cuda() if device.type == 'cuda' else scattering_net
     scat_features  = convert_images_to_scat(imgs, scattering=scattering_net,
                                             device=device, equalize=True,
@@ -73,10 +73,11 @@ def compute_scattering_geometrical_plots():
                  "mnist_test_scat_0.png", "mnist_test_img_2.png", "mnist_test_scat_2.png"]
     eigenvalues = [e_vals_img, e_vals_scat, e_vals_img_0,
                    e_vals_scat_0, e_vals_img_2, e_vals_scat_2]
+    titles = ["Image Domain", "Scattering Domain", "", "", "", ""]
     for i in range(len(savepaths)):
         savepath = os.path.join(CONFIG["paths"]["plots_path"], savepaths[i])
         _ = compute_eigenvalue_histogram(eigenvalues=eigenvalues[i], savefig=savepath,
-                                         title="")
+                                         title=titles[i])
 
     # computing the principal angles between class 0 and class 2
     # both in the image and in the scattering domain
@@ -100,19 +101,23 @@ def compute_scattering_geometrical_plots():
                                            savefig=savepath, corrs=False,
                                            yscale="linear",
                                            xlabel="Angle (radians)",
-                                           ylabel="Number of angles")
+                                           ylabel="Number of angles",
+                                           title="Image Domain")
     savepath = os.path.join(CONFIG["paths"]["plots_path"], "principal_angles_scat.png")
     _ = display_principal_angles_histogram(principal_angles_scat,
                                            savefig=savepath, corrs=False,
                                            yscale="linear",
                                            xlabel="Angle (radians)",
-                                           ylabel="Number of angles")
+                                           ylabel="Number of angles",
+                                           title="Scattering Domain")
 
     print("\nImage Principal Angles")
     print(principal_angles_img)
+    print(np.array(principal_angles_img)*180/np.pi)
     print(stats_df_img)
     print("\n\nScattering Principal Angles")
     print(principal_angles_scat)
+    print(np.array(principal_angles_scat)*180/np.pi)
     print(stats_df_scat)
     print("\nSubspace Affinities Img")
     print(affinities_img)

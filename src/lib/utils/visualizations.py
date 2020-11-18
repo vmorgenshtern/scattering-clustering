@@ -77,7 +77,9 @@ def visualize_accuracy_landscape(xaxis, accuracy, **kwargs):
 ###########################################################
 
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
+
 
 def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle="", fig=None,
                                  ax=None, legend=None, savefig=None, figsize=None):
@@ -94,6 +96,12 @@ def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle=""
         subtitle of the figure
     """
 
+    font = {'family': 'Times New Roman',
+            'size' : 24}
+    matplotlib.rc('font', **font)
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
+
     eigenvalues_norm = eigenvalues/np.sum(eigenvalues)
 
     if(fig is None or ax is None):
@@ -103,7 +111,7 @@ def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle=""
         fig.suptitle(suptitle)
 
     if(bins is None):
-        bins = np.linspace(0,max(eigenvalues_norm),120)
+        bins = np.linspace(0,max(eigenvalues_norm),60)
 
     if(legend is None):
         ax.hist(eigenvalues_norm, bins)
@@ -114,9 +122,10 @@ def compute_eigenvalue_histogram(eigenvalues, title=None, bins=None, suptitle=""
         ax.set_title(f"Eigenvalue distribution")
     else:
         ax.set_title(title)
-    ax.set_xlabel("Magnitude of eigenvalues")
-    ax.set_ylabel("Number of eigenvalues")
+    ax.set_xlabel("Magnitude")
+    ax.set_ylabel("# Eigenvalues")
     ax.set_yscale("log")
+    plt.tight_layout()
 
     if(savefig is not None):
         plt.savefig(savefig)
@@ -168,6 +177,11 @@ def display_principal_angles_histogram(angles, fig=None, ax=None, title="", lege
     """
     Displaying a historgram with the principal angle distribution
     """
+
+    font = {'family': 'Times New Roman',
+            'size' : 18}
+    matplotlib.rc('font', **font)
+    plt.rcParams["font.family"] = "Times New Roman"
 
     if(fig is None):
         fig, ax = plt.subplots(1,1)

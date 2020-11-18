@@ -234,7 +234,7 @@ class USPEC():
         if(num_iters != None):
             self.num_iters = num_iters
 
-        # normalizations
+        # transfer-cut transform of the affinity matrix
         idx = np.arange(graph.shape[0])
         dx = 1/(np.sum(graph, axis=1) + eps)
         Dx = sp.sparse.csr_matrix((dx, (idx, idx)))

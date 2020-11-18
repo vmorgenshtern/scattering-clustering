@@ -1,7 +1,6 @@
 """
-Image clustering using some of the traditional methods for baseline purposes
-
-@author: Angel Villar-Corrales
+Image clustering using some of the traditional methods for baseline purposes.
+Precisely, we use k-means, spectral clustering and DBSCAN
 """
 
 import os

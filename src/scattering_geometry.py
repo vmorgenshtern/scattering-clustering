@@ -1,7 +1,6 @@
 """
-Computing plots to display the geometry and distribution of the scatterin transform
-
-@author: Angel Villar-Corrales
+Computing plots to display the geometry and distribution of the scattering transform.
+In particular, we compute a histogram with the eigenvalue distribution of the data
 """
 
 import os

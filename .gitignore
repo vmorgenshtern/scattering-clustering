@@ -18,6 +18,7 @@ logs.txt
 aux.py
 *.json
 *.zip
+_*
 
 
 # Distribution / packaging

@@ -1,8 +1,6 @@
 """
 Performing image clustering by applyng spectral clustering (with POC preprocessing)
 to the scattering representations of the original small images
-
-@author: Angel Villar-Corrales
 """
 
 import os

@@ -1,7 +1,5 @@
 """
 Global Configuration for the experiments and default parameters
-
-@author: Angel Villar-Corrales
 """
 
 

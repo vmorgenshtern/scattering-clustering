@@ -1,7 +1,5 @@
 """
 Methods for extractig and filtering the results from the 'clustering_results.json'
-
-@author: Angel Villar-Corrales
 """
 
 import os

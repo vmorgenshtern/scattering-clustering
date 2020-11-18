@@ -39,10 +39,12 @@ The specific requirements are listed in [this file](https://github.com/SomeRando
 
 ## Directory Structure
 
-The following tree diagram displays the detailed directory structure of the project. Some directory names and paths can be modified in the [CONFIG File](https://github.com/angelvillar96/EnhancePoseEstimation/blob/development/src/CONFIG.py).
+The following tree diagram displays the detailed directory structure of the project. Some directory names and paths can be modified in the [CONFIG File](https://github.com/SomeRandomUserAccount/ScatClustering/blob/submission_6225/src/CONFIG.py).
 
 ```
 ScatClustering
+|
+├── resources/
 |
 ├── src/
 │   |── lib/
@@ -69,7 +71,9 @@ ScatClustering
 
 Now, we give a short overview of the different files and directories:
 
-- **src/**: Code for to reproduce the results from the paper
+- **resources/**: Images from the README.md file
+
+- **src/**: Code for to reproduce the results from the paper.
 
   - **lib/**: Library methods for different purposes, such as command-line arguments handling, implementation of USPEC clustering or POC projection algorithm.
 

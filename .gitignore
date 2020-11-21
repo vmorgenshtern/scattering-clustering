@@ -11,11 +11,13 @@ __pycache__/
 .ftpignore
 .gitignore
 _paper
+CIFAR_Clustering
 cvpr_paper
 cvpr_supplementary
 cvpr2021AuthorKit
 plots
-CIFAR_Clustering
+results
+supplementary*
 
 logs.txt
 aux.py

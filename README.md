@@ -136,7 +136,7 @@ In this section we explain how to reproduce the results from the ablation study 
 
 <!-- Ablation Study figure. We use HTML syntax to center the image, control width and add top- and bottom-padding.-->
 <p align="center" style="padding-top: 15px; padding-bottom:10px">
-  <img src="resources/ablation_study.png "PSSC Ablation Study" style="width: 70%"/>
+  <img src="resources/ablation_study.png "PSSC Ablation Study" alt="Ablation Study" style="width: 70%"/>
 </p>
 
 The relevant building blocks for the ablation study (i.e., ScatNet, POC projection step and clustering algorithm) can be modified using the following command line arguments:
@@ -163,7 +163,9 @@ $ python scattering_clustering.py --dataset_name mnist --verbose 1 \
                                   --batch_size 256
 ```
 
-<!-- ## Contact 
+
+<!--  -->
+<!-- ## Contact
 
 This project was developed by [Angel Villar-Corrales](http://angelvillarcorrales.com/templates/home.php) and  [Veniamin Morgenshtern](https://machinelearning.tf.fau.de/)
 

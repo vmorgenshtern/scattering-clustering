@@ -163,7 +163,7 @@ $ python scattering_clustering.py --dataset_name mnist --verbose 1 \
                                   --batch_size 256
 ```
 
-<!-- ## Contact
+## Contact
 
 This project was developed by [Angel Villar-Corrales](http://angelvillarcorrales.com/templates/home.php) and  [Veniamin Morgenshtern](https://machinelearning.tf.fau.de/)
 

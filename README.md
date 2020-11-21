@@ -32,14 +32,14 @@ $ conda env create -f environment.yml
 $ conda activate scat_clustering
 ```
 
-The specific requirements are listed in [this file](https://github.com/vmorgenshtern/ScatClustering/blob/submission_6225/environment.yml)
+The specific requirements are listed in [this file](https://github.com/vmorgenshtern/Scattering_MNIST/blob/submission_6225/environment.yml)
 
 *__Note__:* This step might take a few minutes
 
 
 ## Directory Structure
 
-The following tree diagram displays the detailed directory structure of the project. Some directory names and paths can be modified in the [CONFIG File](https://github.com/vmorgenshtern/ScatClustering/blob/submission_6225/src/CONFIG.py).
+The following tree diagram displays the detailed directory structure of the project. Some directory names and paths can be modified in the [CONFIG File](https://github.com/vmorgenshtern/Scattering_MNIST/blob/submission_6225/src/CONFIG.py).
 
 ```
 ScatClustering
@@ -89,7 +89,7 @@ Now, we give a short overview of the different files and directories:
 ## Quick Guide
 
 In this section, we explain how to use the repository to reproduce the experiments from the paper. For other detailed
-guides, we refer to these explanatory [Jupyter Notebooks](https://github.com/vmorgenshtern/ScatClustering/tree/submission_6225/src/notebooks).
+guides, we refer to these explanatory [Jupyter Notebooks](https://github.com/vmorgenshtern/Scattering_MNIST/tree/submission_6225/src/notebooks).
 
 ![Image Clustering Evaluation](resources/table.png "Image Clustering Evaluation")
 
@@ -119,7 +119,7 @@ $ python scattering_clustering.py [-h] [--dataset_name DATASET_NAME]
                                 [--num_dims NUM_DIMS]
 ```  
 
-For a detailed description of these parameters, type ```python scattering_clustering.py  --help```. Default values are listed (and can be modified) in [CONFIG.py](https://github.com/vmorgenshtern/ScatClustering/blob/submission_6225/src/CONFIG.py)
+For a detailed description of these parameters, type ```python scattering_clustering.py  --help```. Default values are listed (and can be modified) in [CONFIG.py](https://github.com/vmorgenshtern/Scattering_MNIST/blob/submission_6225/src/CONFIG.py)
 
 **Example**: To reproduce the listed results for the MNIST dataset, run the following command:
 

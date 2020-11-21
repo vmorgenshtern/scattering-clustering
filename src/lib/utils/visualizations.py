@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def display_subset_data(imgs, labels, shuffle=True):
+def display_subset_data(imgs, labels=None, shuffle=True, **kwargs):
     """
     Displaying a small subset of the images
     """
@@ -27,7 +27,10 @@ def display_subset_data(imgs, labels, shuffle=True):
     for col, idx in enumerate(indices):
         ax[col].imshow(imgs[idx,:])
         ax[col].axis("off")
-        ax[col].set_title(f"Label {labels[idx]}")
+        if(labels is not None):
+            ax[col].set_title(f"Label {labels[idx]}")
+    if("title" in kwargs):
+        fig.suptitle(kwargs["title"])
 
     return
 
@@ -255,5 +258,17 @@ def display_cluster_features(eigenvalues, prototype=None, disp_prot=False, **kwa
     return
 
 
+def display_cluster_imgs(imgs, preds):
+    """
+    Displaying a subset of images from each cluster
+    """
+
+    n_clusters = len(np.unique(preds))
+    for i in range(n_clusters):
+        cur_idx = np.where(preds == i)
+        cur_imgs = imgs[cur_idx, :][0,:]
+        display_subset_data(cur_imgs, title=f"Images from Cluster {i}")
+
+    return
 
 #

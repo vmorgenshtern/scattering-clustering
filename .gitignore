@@ -9,8 +9,10 @@ __pycache__/
 # my own ignores
 .ftpconfig
 .ftpignore
+.gitignore
 _paper
 cvpr_paper
+cvpr_supplementary
 cvpr2021AuthorKit
 plots
 CIFAR_Clustering

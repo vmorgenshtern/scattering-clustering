@@ -1,7 +1,5 @@
 """
 Methods for the 'Projection onto Orthogonal Complement algorithm'
-
-@author: Angel Villar-Corrales
 """
 
 from tqdm import tqdm

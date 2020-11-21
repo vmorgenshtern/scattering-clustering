@@ -1,6 +1,5 @@
 """
 Useful methods for several purposes
-Patched-Imagenet/lib/utils
 """
 
 import os

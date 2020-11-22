@@ -11,6 +11,7 @@ __pycache__/
 .ftpignore
 .gitignore
 _paper
+LICENSE
 CIFAR_Clustering
 cvpr_paper
 cvpr_supplementary

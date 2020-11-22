@@ -25,21 +25,21 @@ To download the code, fork the repository or clone it using the following comman
 
 To get the repository running, you will need several python packages, e.g., numpy, kymation, pytorch or matplotlib.
 
-You can install them all easily and avoiding dependency issues by installing the conda environment file included in the repository. To do so, run the following command from the Conda Command Window:
+You can install them all easily and avoiding dependency issues by installing the conda environment file included in the repository. To do so, run the following command from the Conda Command Window or from a Terminal:
 
 ```shell
 $ conda env create -f environment.yml
 $ conda activate scat_clustering
 ```
 
-The specific requirements are listed in [this file](https://github.com/vmorgenshtern/Scattering_MNIST/blob/submission_6225/environment.yml)
+The specific requirements are listed in [this file](https://github.com/vmorgenshtern/Scattering_MNIST/blob/master/environment.yml)
 
 *__Note__:* This step might take a few minutes
 
 
 ## Directory Structure
 
-The following tree diagram displays the detailed directory structure of the project. Some directory names and paths can be modified in the [CONFIG File](https://github.com/vmorgenshtern/Scattering_MNIST/blob/submission_6225/src/CONFIG.py).
+The following tree diagram displays the detailed directory structure of the project. Some directory names and paths can be modified in the [CONFIG File](https://github.com/vmorgenshtern/Scattering_MNIST/blob/master/src/CONFIG.py).
 
 ```
 ScatClustering
@@ -73,7 +73,7 @@ Now, we give a short overview of the different files and directories:
 
 - **resources/**: Images from the README.md file
 
-- **src/**: Code for to reproduce the results from the paper.
+- **src/**: Code to reproduce the results from the paper.
 
   - **lib/**: Library methods for different purposes, such as command-line arguments handling, implementation of USPEC clustering or POC projection algorithm.
 
@@ -89,7 +89,7 @@ Now, we give a short overview of the different files and directories:
 ## Quick Guide
 
 In this section, we explain how to use the repository to reproduce the experiments from the paper. For other detailed
-guides, we refer to these explanatory [Jupyter Notebooks](https://github.com/vmorgenshtern/Scattering_MNIST/tree/submission_6225/src/notebooks).
+guides, we refer to these explanatory [Jupyter Notebooks](https://github.com/vmorgenshtern/Scattering_MNIST/tree/master/src/notebooks).
 
 ![Image Clustering Evaluation](resources/table.png "Image Clustering Evaluation")
 
@@ -119,7 +119,7 @@ $ python scattering_clustering.py [-h] [--dataset_name DATASET_NAME]
                                 [--num_dims NUM_DIMS]
 ```  
 
-For a detailed description of these parameters, type ```python scattering_clustering.py  --help```. Default values are listed (and can be modified) in [CONFIG.py](https://github.com/vmorgenshtern/Scattering_MNIST/blob/submission_6225/src/CONFIG.py)
+For a detailed description of these parameters, type ```python scattering_clustering.py  --help```. Default values are listed (and can be modified) in [CONFIG.py](https://github.com/vmorgenshtern/Scattering_MNIST/blob/master/src/CONFIG.py)
 
 **Example**: To reproduce the listed results for the MNIST dataset, run the following command:
 
@@ -147,14 +147,14 @@ The relevant building blocks for the ablation study (i.e., ScatNet, POC projecti
 
  - ```--uspec```: If 'True', the U-SPEC algorithm is used to cluster the feature vectors. Otherwise, we use the k-means algorithm.
 
-**Example 1**: The following reproduces the row (2) from the ablation study:
+**Example 1**: The following reproduces the row (2) from the ablation study table:
 
 ```shell
 $ python scattering_clustering.py --dataset_name mnist --verbose 1 \
                                   --scattering False --batch_size 256
 ```
 
-**Example 2**: The following reproduces the row (6) from the ablation study:
+**Example 2**: The following reproduces the row (6) from the ablation study table:
 
 ```shell
 $ python scattering_clustering.py --dataset_name mnist --verbose 1 \

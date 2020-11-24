@@ -164,9 +164,9 @@ $ python scattering_clustering.py --dataset_name mnist --verbose 1 \
 ```
 
 
-<!--  -->
-<!-- ## Contact
+
+## Contact
 
 This project was developed by [Angel Villar-Corrales](http://angelvillarcorrales.com/templates/home.php) and  [Veniamin Morgenshtern](https://machinelearning.tf.fau.de/)
 
-In case of any questions or problems regarding the project or repository, do not hesitate to contact the authors at angelvillarcorrales@gmail.com. -->
+In case of any questions or problems regarding the project or repository, do not hesitate to contact the authors at angelvillarcorrales@gmail.com.

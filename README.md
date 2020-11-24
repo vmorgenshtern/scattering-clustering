@@ -2,6 +2,7 @@
 
 
 This respository contains the main codebase for the paper: *Scattering Transform Based Image Clustering using Projection onto Orthogonal Complement*.
+[Paper](https://arxiv.org/pdf/2011.11586.pdf)
 
 This respository allows to reproduce the experiments from the paper. Furthermore, we include Jupyter Notebooks illustrating step-by-step out PSSC clustering framework as well as the POC projection step.
 

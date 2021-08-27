@@ -2,7 +2,7 @@
 
 
 This respository contains the main codebase for the paper: *Scattering Transform Based Image Clustering using Projection onto Orthogonal Complement*.
-[Paper](https://arxiv.org/pdf/2011.11586.pdf)
+[Paper & Video](https://dl.acm.org/doi/10.1145/3463944.3469098)
 
 This respository allows to reproduce the experiments from the paper. Furthermore, we include Jupyter Notebooks illustrating step-by-step out PSSC clustering framework as well as the POC projection step.
 
@@ -11,7 +11,8 @@ This respository allows to reproduce the experiments from the paper. Furthermore
  * [1. Getting Started](#getting-started)
  * [2. Directory Structure](#directory-structure)
  * [3. Quick Guide](#quick-guide)
- * [4. Contact](#contact)
+ * [4. Citation](#citation)
+ * [5. Contact](#contact)
 
 
 ## Getting Started
@@ -164,6 +165,16 @@ $ python scattering_clustering.py --dataset_name mnist --verbose 1 \
                                   --batch_size 256
 ```
 
+## Citation
+Please consider citing our work if you find our findings or our repository helpful.
+```
+@article{villar2021deep,
+  title={Scattering Transform Based Image Clustering using Projection onto Orthogonal Complement},
+  author={Villar-Corrales, Angel and Morgenshtern, Veniamin},
+  journal={International Conference on Multimedia Retrieval (ICMR)},
+  year={2021}
+}
+```
 
 
 ## Contact

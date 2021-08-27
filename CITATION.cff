@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Villar-Corrales
+    given-names: Angel
+  - family-names: Morgenshtern
+    given-names: Veniamin I.
+title: "Scattering Transform Based Image Clustering using Projection onto Orthogonal Complement"
+version: 1.0.1
+date-released: 2021-08-20

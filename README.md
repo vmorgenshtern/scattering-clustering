@@ -171,7 +171,7 @@ Please consider citing our work if you find our findings or our repository helpf
 @article{villar2021deep,
   title={Scattering Transform Based Image Clustering using Projection onto Orthogonal Complement},
   author={Villar-Corrales, Angel and Morgenshtern, Veniamin},
-  journal={International Conference on Multimedia Retrieval (ICMR)},
+  journal={Proceedings of the 2021 Workshop on Intelligent Cross-Data Analysis and Retrieval (ICDAR)},
   year={2021}
 }
 ```
